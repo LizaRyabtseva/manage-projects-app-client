@@ -1,30 +1,58 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
-  <router-view/>
+    <the-header></the-header>
+    <div class="container">
+        <navigation v-if="isAuth"></navigation>
+        <router-view></router-view>
+    </div>
 </template>
 
+<script lang="ts">
+import {defineComponent, provide, computed} from 'vue';
+import {useStore} from "vuex";
+import TheHeader from '@/components/nav/TheHeader.vue';
+import Navigation from "@/components/nav/TheNavigation.vue";
+
+export default defineComponent({
+    components: {Navigation, TheHeader},
+    setup() {
+        const store = useStore();
+        store.dispatch('auth/tryLogin')
+        let isAuth = computed( () => store.getters['auth/isAuthenticated']);
+        provide('isAuth', isAuth);
+        // onMounted(async () => {
+        //     isAuth.value = await store.getters['auth/isAuthenticated'];
+        //     console.log(isAuth.value);
+        //     console.log('is logged in');
+        // });
+
+        return {
+            isAuth
+        }
+    }
+})
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#nav {
-  padding: 30px;
+html {
+    font-size: 14pt;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+body {
+    width: 100%;
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.container{
+    display: flex;
+    flex-direction: row;
 }
 </style>

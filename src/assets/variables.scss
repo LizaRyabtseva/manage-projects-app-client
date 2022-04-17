@@ -1,0 +1,12 @@
+$color-primary: #A3D9E0;
+$color-light: rgba(237, 231, 246, 0.1);
+$color-medium: #F6B6C7;
+$color-dark: #4c4f56;
+$color-border: rgba(76, 79, 86, 0.25);
+
+:export {
+    colorPrimary: $color-primary;
+    colorLight: $color-light;
+    colorDark: $color-dark;
+    colorBorder: $color-border;
+}

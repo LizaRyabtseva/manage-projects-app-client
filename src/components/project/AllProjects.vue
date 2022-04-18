@@ -1,7 +1,7 @@
 <template>
     <base-container>
         <h4>Browse Projects</h4>
-        <the-search/>
+        <the-search category="projects"/>
         <projects-list />
     </base-container>
 

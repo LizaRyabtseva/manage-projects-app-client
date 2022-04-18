@@ -42,10 +42,10 @@ class AppActions extends Actions<AppState, AppGetters, AppMutations, Actions> {
                 //     'Content-Type': 'application/json',
                 // Authorization: 'Bearer ' + this.state.token
                 // }
-            console.log(response.data);
+            // console.log(response.data);
             if (category === 'users') {
                 this.commit('setFoundUsers', response.data.users);
-            } else if (category === 'project') {
+            } else if (category === 'projects') {
                 this.commit('setFoundProjects', response.data.projects);
             }
             

@@ -1,7 +1,11 @@
 <template>
     <base-container>
         <h4>Browse Projects</h4>
-        <the-search category="projects"/>
+        <the-search
+            label-placeholder="Project title"
+            category="users"
+            size="small"
+        />
         <projects-list />
     </base-container>
 

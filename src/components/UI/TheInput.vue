@@ -1,14 +1,9 @@
 <template>
     <div class="input-label-con" :class="size">
-<!--         :class="[`input-${color}`, {-->
-<!--            'is-label-placeholder': labelPlaceholder,-->
-<!--            'isFocus': isFocus-->
-<!--        }]"-->
-<!--    >-->
-<!--        <label v-if="labelPlaceholder ? false : labelPlaceholder"-->
-<!--               class="input-label"-->
-<!--               @click="focusInput">{{ labelPlaceholder }}</label>-->
         <div class="input-con" :class="{textarea: textarea}">
+<!--            <span class="material-icons">-->
+<!--                search-->
+<!--            </span>-->
             <textarea ref="input"
                       v-if="textarea"
                       :placeholder="labelPlaceholder"

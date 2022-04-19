@@ -19,6 +19,15 @@
                     size="large"
                     textarea
                 ></the-input>
+                <the-search
+                    label-placeholder="Team"
+                    category="users"
+                    size="large"
+                    v-model="user"
+                    @choose="choose"
+                    @blur="blur"
+                />
+                <div v-for="member in team" :key="member" :id="member">{{member}}</div>
             </div>
             <div class="action">
                 <the-button type="submit" mode="dark" size="large">Create</the-button>
@@ -36,31 +45,49 @@ import TheInput from "@/components/UI/TheInput.vue";
 import TheButton from "@/components/UI/TheButton.vue";
 import BaseContainer from "@/components/UI/BaseContainer.vue";
 import IProject from '@/models/IProject';
+import TheSearch from "@/components/UI/search/TheSearch.vue";
 
 export default defineComponent({
     name: "CreateProject",
-    components: {BaseContainer, TheButton, TheInput},
+    components: {TheSearch, BaseContainer, TheButton, TheInput},
     setup() {
         const title = ref('');
         const code = ref('');
         const description = ref('');
+        const user = ref('');
+        let team: Array<number> = [];
+
         const store = useStore();
         const router = useRouter();
     
         const submitHandler = () => {
+
             const newProject: IProject = {
                 title: title.value,
                 code: code.value,
-                description: description.value
+                description: description.value,
             };
             store.dispatch('project/createProject', newProject);
             router.replace('/projects');
         }
-        
+
+        const choose = (value: number) => {
+            team.push(value);
+            console.log(team);
+        }
+
+        const blur = () => {
+            user.value = '';
+        }
+
         return {
             title,
             code,
             description,
+            user,
+            team,
+            choose,
+            blur,
             submitHandler
         }
     }

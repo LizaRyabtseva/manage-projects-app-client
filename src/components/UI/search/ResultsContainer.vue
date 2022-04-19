@@ -31,7 +31,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import '../../assets/styles';
+@import '../../../assets/styles';
 .search-results {
     @include setBorder(1px, 'all', $color-border);
 

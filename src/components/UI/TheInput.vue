@@ -106,26 +106,25 @@ export default defineComponent({
     
         const focusHandler = (event: Event) => {
             let v;
-            if (!textarea)
+            if (!textarea.value) {
                 v = (event.target as HTMLInputElement).value;
-            else
+            } else
                 v = (event.target as HTMLTextAreaElement).value;
             emit('focus', v);
             changeFocus(true);
-            // alert('true')
         };
-        
+
         const blurHandler = (event: Event) => {
-            let v;
-            if (!textarea)
+            let v, t;
+            if (!textarea.value) {
                 v = (event.target as HTMLInputElement).value;
-            else
+            } else
                 v = (event.target as HTMLTextAreaElement).value;
             emit('blur', v);
             changeFocus(false);
-            
+
         };
-        
+
         const focusInput = () => {
             input.value.focus();
         };
@@ -135,7 +134,6 @@ export default defineComponent({
             emit('update:modelValue', value);
             emit('search', value);
         }
-        
         
         return {
             input,

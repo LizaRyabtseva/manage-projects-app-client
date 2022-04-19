@@ -3,7 +3,7 @@
         <h4>Browse Projects</h4>
         <the-search
             label-placeholder="Project title"
-            category="users"
+            category="projects"
             size="small"
         />
         <projects-list />
@@ -16,7 +16,7 @@ import ProjectsList from "@/components/project/ProjectsList";
 import {defineComponent} from "vue";
 
 import BaseContainer from "@/components/UI/BaseContainer";
-import TheSearch from "@/components/UI/TheSearch";
+import TheSearch from "@/components/UI/search/TheSearch";
 
 export default defineComponent({
     name: "AllProjects",

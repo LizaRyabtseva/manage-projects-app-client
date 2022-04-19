@@ -12,13 +12,17 @@ export default defineComponent({
         value: {
             type: String,
             required: true
+        },
+        id: {
+            type: Number,
+            required: true
         }
     },
     setup(props, {emit}) {
-        const {value} = toRefs(props);
+        const {id} = toRefs(props);
 
         const chooseHandler = () => {
-            emit('choose', value)
+            emit('choose', id)
         }
 
         return {
@@ -28,6 +32,16 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../../../assets/styles';
+
+.found-value {
+    background-color: $color-primary;
+
+    &:hover {
+        background-color: darken($color-primary, 10%);
+        cursor: pointer;
+    }
+}
 
 </style>

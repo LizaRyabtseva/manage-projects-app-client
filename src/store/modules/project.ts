@@ -48,9 +48,8 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
     async createProject(data: IProject) {
         try {
             const token = ''; // получить токен из текущего пользователя
-            const response = await axios.post(`http://localhost:5000/projects/create`, {
-                ...data, email: 'lizaveta.rabtsava@gmail.com'
-                }, {
+            const response = await axios.post(`http://localhost:5000/projects/create`,
+                data, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`}

@@ -19,10 +19,10 @@ export default defineComponent({
         }
     },
     setup(props, {emit}) {
-        const {id} = toRefs(props);
+        const {id, value} = toRefs(props);
 
         const chooseHandler = () => {
-            emit('choose', id)
+            emit('choose', {id, email: value});
         }
 
         return {
@@ -36,10 +36,10 @@ export default defineComponent({
 @import '../../../assets/styles';
 
 .found-value {
-    background-color: $color-primary;
-
+    color: $color-dark;
+    font-size: 80%;
     &:hover {
-        background-color: darken($color-primary, 10%);
+        color: darken($color-primary, 25%);
         cursor: pointer;
     }
 }

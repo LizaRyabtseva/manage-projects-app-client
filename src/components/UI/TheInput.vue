@@ -1,13 +1,10 @@
 <template>
     <div class="input-label-con" :class="size">
-        <div class="input-con" :class="{textarea: textarea}">
-<!--            <span class="material-icons">-->
-<!--                search-->
-<!--            </span>-->
+        <div class="input-con" :class="[{textarea: textarea, label: !!labelPlaceholder}]">
             <textarea ref="input"
                       v-if="textarea"
                       :placeholder="labelPlaceholder"
-                      rows="5"
+                      rows="4"
                       v-bind="$attrs"
                       :value="modelValue"
                       @input="inputHandler"
@@ -30,24 +27,28 @@
                    v-bind="$attrs"
                    :value="modelValue"
                    :type="$attrs.type ? $attrs.type : 'text'"
+                   :class="{disabled: disabled}"
                    @input="inputHandler"
                    @focus="focusHandler"
                    @blur="blurHandler"
             />
+            <span @click="deleteHandler"
+                  v-if="disabled"
+                  class="material-icons"
+            >clear</span>
             <Transition name="label">
                 <label v-if="isFocus || isValue"
                        class="input-label"
                        @click="focusInput">{{ labelPlaceholder }}</label>
             </Transition>
         </div>
+
     </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, ref, toRefs, computed} from "vue";
 import variables from '../../assets/variables.scss';
-import {RefValue} from "vue/macros";
-import {useStore} from "vuex";
 
 export default defineComponent({
     name: "TheInput",
@@ -77,15 +78,19 @@ export default defineComponent({
             default: false,
             type: Boolean,
             required: false
+        },
+        disabled: {
+            default: false,
+            type: Boolean,
+            required: false
         }
     },
-    emits: ['update:modelValue', 'blur', 'focus', 'search'],
+    emits: ['update:modelValue', 'blur', 'focus', 'search', 'deleteUser'],
     setup(props, {emit}) {
         const isFocus = ref(false);
         const input = ref();
         const {textarea, modelValue} = toRefs(props);
-   
-        const store = useStore();
+
         
         const isValue = computed(() => {
             return !!modelValue.value;
@@ -115,7 +120,7 @@ export default defineComponent({
         };
 
         const blurHandler = (event: Event) => {
-            let v, t;
+            let v;
             if (!textarea.value) {
                 v = (event.target as HTMLInputElement).value;
             } else
@@ -124,6 +129,10 @@ export default defineComponent({
             changeFocus(false);
 
         };
+
+        const deleteHandler = (value: number) => {
+            emit('deleteUser', value);
+        }
 
         const focusInput = () => {
             input.value.focus();
@@ -143,63 +152,11 @@ export default defineComponent({
             inputHandler,
             focusHandler,
             blurHandler,
+            deleteHandler,
             focusInput,
             searchEmit
         }
-    },
-    // data() {
-    //     return {
-    //         isFocus: false
-    //     }
-    // },
-    // methods: {
-        // changeFocus(boolValue: boolean) {
-        //     this.isFocus = boolValue;
-        // },
-        // inputHandler(event: Event) {
-        //     let v;
-        //     if (!this.textarea)
-        //         v = (event.target as HTMLInputElement).value;
-        //     else
-        //         v = (event.target as HTMLTextAreaElement).value;
-        //     this.$emit('update:modelValue', v);
-        // },
-        // searchHandler(event: Event) {
-        //     const value = (event.target as HTMLInputElement).value;
-        //     if (value.length > 2) {
-        //         this.$store.dispatch('auth/searchUser', value);
-        //     }
-        // },
-        // focusHandler(event: Event) {
-        //     let v;
-        //     if (!this.textarea)
-        //         v = (event.target as HTMLInputElement).value;
-        //     else
-        //         v = (event.target as HTMLTextAreaElement).value;
-        //     this.$emit('focus', v);
-        //     this.changeFocus(true);
-        // },
-        // blurHandler(event: Event) {
-        //     let v;
-        //     if (!this.textarea)
-        //         v = (event.target as HTMLInputElement).value;
-        //     else
-        //         v = (event.target as HTMLTextAreaElement).value;
-        //     this.$emit('blur', v);
-        //     this.changeFocus(false);
-        // },
-        // focusInput() {
-        //     if (!this.textarea)
-        //         (this.$refs.input as RefValue<HTMLInputElement>).focus();
-        //     else
-        //         (this.$refs.input as RefValue<HTMLTextAreaElement>).focus();
-        // }
-    // },
-    // computed: {
-    //     isValue(){
-    //         return !!this.modelValue;
-    //     }
-    // }
+    }
 })
 </script>
 
@@ -211,7 +168,7 @@ export default defineComponent({
     &.small {
         width: 30%;
         input {
-            font-size: 75%;
+            font-size: 80%;
         }
     }
     &.normal {
@@ -231,14 +188,25 @@ export default defineComponent({
 .input-con {
     display: flex;
     flex-direction: column-reverse;
-    min-height: 60px;
+    min-height: 30px;
     //background-color: #0ca8d7;
+    & span {
+        position: absolute;
+        &:hover {
+            cursor: pointer;
+        }
+
+    }
+    &.label {
+        min-height: 55px;
+    }
     
     &.textarea {
-        min-height: 150px;
+        min-height: 125px;
         //background-color: #08a808;
     }
 }
+
 
 input, textarea {
     @include setBorder(1px, 'all', $color-border);
@@ -247,6 +215,10 @@ input, textarea {
     font: inherit;
     font-size: 80%;
     padding-left: 5px;
+
+    &.disabled {
+        padding-left: 25px;
+    }
     &:focus {
         outline: 0;
         box-shadow: 0px 0px 4px 1px $color-primary;

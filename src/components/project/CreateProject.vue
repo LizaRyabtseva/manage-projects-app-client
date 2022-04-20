@@ -20,14 +20,26 @@
                     textarea
                 ></the-input>
                 <the-search
-                    label-placeholder="Team"
+                    label-placeholder="User's E-mail"
                     category="users"
                     size="large"
                     v-model="user"
                     @choose="choose"
                     @blur="blur"
                 />
-                <div v-for="member in team" :key="member" :id="member">{{member}}</div>
+                <p class="team-title">Team</p>
+<!--            <div class="team" v-if="team.length > 0">-->
+                <the-input
+                    v-for="member in team"
+                    :key="member.id"
+                    :id="member.id"
+                    v-model="member.email"
+                    size="large"
+                    disabled
+                    @delete-user="deleteUser(member.id)"
+                />
+<!--                <div v-for="member in team" :key="member.id" :id="member.id">{{member.email}}</div>-->
+<!--            </div>-->
             </div>
             <div class="action">
                 <the-button type="submit" mode="dark" size="large">Create</the-button>
@@ -37,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from "vue";
+import {defineComponent, ref, reactive, Ref} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
@@ -51,33 +63,44 @@ export default defineComponent({
     name: "CreateProject",
     components: {TheSearch, BaseContainer, TheButton, TheInput},
     setup() {
-        const title = ref('');
+        // как-то так надо сделать для обновления
+        const t = 'lz';
+        const title = t ? ref(t) : ref('');
         const code = ref('');
         const description = ref('');
         const user = ref('');
-        let team: Array<number> = [];
+        let team: Array<{id: number, email: string}> = reactive([]);
+        // let team: Ref<{id: number, email: string}>[] = reactive([]);
 
         const store = useStore();
         const router = useRouter();
     
         const submitHandler = () => {
-
+            const memberIds = team.map(member => member.id);
+            const userId = store.getters['auth/userId'];
             const newProject: IProject = {
+                id: userId,
                 title: title.value,
                 code: code.value,
                 description: description.value,
+                team: memberIds
             };
             store.dispatch('project/createProject', newProject);
             router.replace('/projects');
         }
 
-        const choose = (value: number) => {
-            team.push(value);
-            console.log(team);
+        const choose = (value: any) => {
+            if (team.findIndex(member => member.id === value.id.value) === -1)
+                team.push(value);
         }
 
         const blur = () => {
             user.value = '';
+        }
+
+        const deleteUser = (value: number) => {
+            const id = team.findIndex(member => member.id === value);
+            team.splice(id, 1);
         }
 
         return {
@@ -88,6 +111,7 @@ export default defineComponent({
             team,
             choose,
             blur,
+            deleteUser,
             submitHandler
         }
     }
@@ -116,6 +140,21 @@ form {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+}
+
+//.team {
+//    @include setBorder(1px, 'all', $color-border);
+//    display: flex;
+//    flex-direction: column;
+//    //color: $color-dark;
+//}
+
+.team-title {
+    color: darken($color-primary, 25%);
+    width: 90%;
+    margin-top: 20px;
+    font-size: 80%;
+    //margin: 0 auto;
 }
 
 </style>

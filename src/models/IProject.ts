@@ -6,4 +6,5 @@ export default interface IProject {
     title: string;
     user?: IUser | string;
     description?: string;
+    team?: number[]
 }

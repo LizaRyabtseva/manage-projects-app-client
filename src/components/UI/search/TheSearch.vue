@@ -1,14 +1,15 @@
 <template>
 <!--    <form>-->
-        <the-input
-            type="search"
-            :model-value="modelValue"
-            :label-placeholder="labelPlaceholder"
-            v-bind="$attrs"
-            :size="size"
-            @blur="blurHandler"
-            @search="searchHandler"
-        />
+    <the-input
+        type="search"
+        :model-value="modelValue"
+        :label-placeholder="labelPlaceholder"
+        v-bind="$attrs"
+        :size="size"
+        @blur="blurHandler"
+        @search="searchHandler"
+        @delete-user="deleteHandler"
+    />
 <!--    </form>-->
     <results-container v-if="show && category === 'users'" :class="size">
         <result-item v-for="user in foundData" :id="user.id" :key="user.id"
@@ -33,7 +34,7 @@ import ResultItem from "@/components/UI/search/ResultItem.vue";
 export default defineComponent({
     name: "TheSearch",
     components: {ResultItem, ResultsContainer, TheInput},
-    emits: ['choose', 'blur'],
+    emits: ['choose', 'blur', 'deleteUser'],
     props: {
         category: {
             type: String,
@@ -83,13 +84,17 @@ export default defineComponent({
             }
         };
 
-        const chooseHandler = (id: string) => {
-            emit('choose', {value: id});
+        const chooseHandler = (value: {id: number, email: string}) => {
+            emit('choose', value);
         }
 
         const blurHandler = () => {
-            // toggleShow(false);
             emit('blur');
+            setTimeout(() => toggleShow(false), 200);
+        }
+
+        const deleteHandler = (value: number) => {
+            emit('deleteUser', value);
         }
 
         // const choose = () => {
@@ -101,13 +106,13 @@ export default defineComponent({
             show,
             searchHandler,
             chooseHandler,
-            blurHandler
+            blurHandler,
+            deleteHandler
         }
     }
 })
 </script>
 
 <style scoped lang="scss">
-
 
 </style>

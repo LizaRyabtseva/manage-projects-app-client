@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, toRefs, provide} from 'vue';
+import {defineComponent, ref, toRefs} from 'vue';
 
 
 export default defineComponent({
@@ -26,11 +26,6 @@ export default defineComponent({
             default: null,
             type: [String, Number],
             required: true
-        },
-        spacer: {
-            default: false,
-            type: Boolean,
-            required: false
         },
         staticPosition: {
             default: false,
@@ -46,23 +41,7 @@ export default defineComponent({
         return {
             currentIndex
         }
-    },
-    // data() {
-    //     return {
-    //         currentIndex: 0
-    //     }
-    // },
-    // created() {
-    //     this.currentIndex = +this.defaultIndex;
-    // },
-    // methods: {
-    //     getActive() {
-    //         return this.currentIndex;
-    //     },
-    //     setIndexActive(index: number) {
-    //         this.currentIndex = index;
-    //     }
-    // }
+    }
 })
 </script>
 
@@ -76,6 +55,8 @@ export default defineComponent({
 .sidebar-content {
     background-color: $color-light;
     height: 92vh;
+    //height: 100vh;
+    //position: fixed;
     width: 16.2%;
     display: flex;
     flex-direction: column;

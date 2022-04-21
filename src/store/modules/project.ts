@@ -5,6 +5,12 @@ import IProject from "@/models/IProject";
 
 class ProjectState {
     projects: IProject[] = [];
+    fetchedProject: IProject = {id: 1,
+        title: 'rt',
+        code: 'dfg',
+        description: 'dfg',
+        team: [3]
+    };
     
     projectHeader: IProject = {
         id: -1,
@@ -23,11 +29,20 @@ class ProjectGetters extends Getters<ProjectState> {
     get projectHeaderTable() {
         return this.state.projectHeader;
     }
+    
+    get fetchedProject() {
+        return this.state.fetchedProject;
+    }
 }
 
 class ProjectMutations extends Mutations<ProjectState> {
     setProjects(projects: IProject[]) {
         this.state.projects = projects;
+    }
+    
+    setFetchedProject(project: IProject) {
+        this.state.fetchedProject = project;
+        console.log(this.state.fetchedProject);
     }
 }
 
@@ -61,6 +76,18 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         }
     }
     
+    async fetchProject(id: number) {
+        try {
+            const response = await axios.get(`http://localhost:5000/projects/project/${id}`);
+            const project = response.data.project;
+            console.log(response.data.project);
+    
+            this.commit('setFetchedProject', project);
+        } catch (err) {
+            console.log(err.response);
+            console.log(err.message);
+        }
+    }
      // this.commit('changeProject', payload);
 }
 

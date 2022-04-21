@@ -1,5 +1,6 @@
 <template>
     <base-container>
+        {{fetchedProject}}
         <h4>Create a new project</h4>
         <form @submit.prevent="submitHandler">
             <div class="form-fields">
@@ -28,7 +29,6 @@
                     @blur="blur"
                 />
                 <p class="team-title">Team</p>
-<!--            <div class="team" v-if="team.length > 0">-->
                 <the-input
                     v-for="member in team"
                     :key="member.id"
@@ -38,8 +38,6 @@
                     disabled
                     @delete-user="deleteUser(member.id)"
                 />
-<!--                <div v-for="member in team" :key="member.id" :id="member.id">{{member.email}}</div>-->
-<!--            </div>-->
             </div>
             <div class="action">
                 <the-button type="submit" mode="dark" size="large">Create</the-button>
@@ -49,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, reactive, Ref} from "vue";
+import {defineComponent, ref, reactive, computed, watch, onMounted} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
@@ -64,15 +62,26 @@ export default defineComponent({
     components: {TheSearch, BaseContainer, TheButton, TheInput},
     setup() {
         // как-то так надо сделать для обновления
-        const t = 'lz';
-        const title = t ? ref(t) : ref('');
+        const store = useStore();
+        onMounted(() => {
+            store.dispatch('project/fetchProject', 3);
+        })
+        
+        const fetchedProject = computed(() => store.getters['project/fetchedProject']);
+        console.log(fetchedProject);
+        
+        // const title = ref('');
+        // watch(title, (newValue: string) => {
+        //     title.value = newValue;
+        // });
+        const title = computed(() => fetchedProject.value.title) || ref('');
+        // const title = fetchedProject.value.title || ref('');
         const code = ref('');
         const description = ref('');
         const user = ref('');
         let team: Array<{id: number, email: string}> = reactive([]);
         // let team: Ref<{id: number, email: string}>[] = reactive([]);
-
-        const store = useStore();
+        
         const router = useRouter();
     
         const submitHandler = () => {
@@ -104,6 +113,7 @@ export default defineComponent({
         }
 
         return {
+            fetchedProject,
             title,
             code,
             description,

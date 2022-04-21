@@ -1,6 +1,5 @@
 <template>
     <base-container>
-        {{fetchedProject}}
         <h4>Create a new project</h4>
         <form @submit.prevent="submitHandler">
             <div class="form-fields">
@@ -47,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, reactive, computed, watch, onMounted} from "vue";
+import {defineComponent, ref, reactive, computed, onMounted, WritableComputedRef, toRefs} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
@@ -60,32 +59,47 @@ import TheSearch from "@/components/UI/search/TheSearch.vue";
 export default defineComponent({
     name: "CreateProject",
     components: {TheSearch, BaseContainer, TheButton, TheInput},
-    setup() {
-        // как-то так надо сделать для обновления
+    props: {
+        mode: {
+            type: String,
+            default: 'create',
+            required: true
+        }
+    },
+    setup(props) {
+        const {mode} = toRefs(props);
         const store = useStore();
+        const router = useRouter();
+
         onMounted(() => {
-            store.dispatch('project/fetchProject', 3);
-        })
+            store.dispatch('project/fetchProject', 7);
+        });
         
         const fetchedProject = computed(() => store.getters['project/fetchedProject']);
-        console.log(fetchedProject);
-        
-        // const title = ref('');
-        // watch(title, (newValue: string) => {
-        //     title.value = newValue;
-        // });
-        const title = computed(() => fetchedProject.value.title) || ref('');
-        // const title = fetchedProject.value.title || ref('');
-        const code = ref('');
-        const description = ref('');
+
+        const title = computed({
+            get: () => fetchedProject.value.title,
+            set: (value) => fetchedProject.value.title = value
+        }) || ref('');
+        const code = computed({
+            get: () => fetchedProject.value.code,
+            set: (value) => fetchedProject.value.code = value
+        }) || ref('');
+        const description = computed({
+            get: () => fetchedProject.value.description,
+            set: (value) => fetchedProject.value.description = value
+        }) || ref('');
+
         const user = ref('');
-        let team: Array<{id: number, email: string}> = reactive([]);
-        // let team: Ref<{id: number, email: string}>[] = reactive([]);
-        
-        const router = useRouter();
-    
+        const team: WritableComputedRef<{id: number, email: string}[]> =
+            computed({
+                get: () => fetchedProject.value.team,
+                set: (value) => fetchedProject.value.team = value
+            }) || reactive([]);
+
+
         const submitHandler = () => {
-            const memberIds = team.map(member => member.id);
+            const memberIds = team.value.map(member => member.id);
             const userId = store.getters['auth/userId'];
             const newProject: IProject = {
                 id: userId,
@@ -99,8 +113,8 @@ export default defineComponent({
         }
 
         const choose = (value: any) => {
-            if (team.findIndex(member => member.id === value.id.value) === -1)
-                team.push(value);
+            if (team.value.findIndex(member => member.id === value.id.value) === -1)
+                team.value.push(value);
         }
 
         const blur = () => {
@@ -108,8 +122,8 @@ export default defineComponent({
         }
 
         const deleteUser = (value: number) => {
-            const id = team.findIndex(member => member.id === value);
-            team.splice(id, 1);
+            const id = team.value.findIndex(member => member.id === value);
+            team.value.splice(id, 1);
         }
 
         return {

@@ -28,6 +28,7 @@
                    :value="modelValue"
                    :type="$attrs.type ? $attrs.type : 'text'"
                    :class="{disabled: disabled}"
+                   :disabled="disabled"
                    @input="inputHandler"
                    @focus="focusHandler"
                    @blur="blurHandler"

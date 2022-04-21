@@ -42,7 +42,6 @@ class ProjectMutations extends Mutations<ProjectState> {
     
     setFetchedProject(project: IProject) {
         this.state.fetchedProject = project;
-        console.log(this.state.fetchedProject);
     }
 }
 
@@ -80,7 +79,6 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         try {
             const response = await axios.get(`http://localhost:5000/projects/project/${id}`);
             const project = response.data.project;
-            console.log(response.data.project);
     
             this.commit('setFetchedProject', project);
         } catch (err) {

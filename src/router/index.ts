@@ -17,7 +17,10 @@ const routes: Array<RouteRecordRaw> = [{
 }, {
     path: routesMap.createProject,
     name: 'createProject',
-    component: CreateProject
+    component: CreateProject,
+    // props: {
+    //     projectId: 5
+    // }
 }, {
     path: '/projects',
     name: 'projects',

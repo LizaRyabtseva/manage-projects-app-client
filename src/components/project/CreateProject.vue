@@ -46,7 +46,16 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, reactive, computed, onMounted, WritableComputedRef, toRefs} from "vue";
+import {
+    defineComponent,
+    ref,
+    reactive,
+    computed,
+    onMounted,
+    WritableComputedRef,
+    ReactiveEffect,
+    toRefs, watch
+} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
@@ -60,46 +69,52 @@ export default defineComponent({
     name: "CreateProject",
     components: {TheSearch, BaseContainer, TheButton, TheInput},
     props: {
-        mode: {
-            type: String,
-            default: 'create',
-            required: true
+        projectId: {
+            type: Number,
+            required: false
         }
     },
     setup(props) {
-        const {mode} = toRefs(props);
+        const {projectId} = toRefs(props);
         const store = useStore();
         const router = useRouter();
 
         onMounted(() => {
-            store.dispatch('project/fetchProject', 7);
+            if (projectId.value)
+                store.dispatch('project/fetchProject', projectId.value);
         });
         
-        const fetchedProject = computed(() => store.getters['project/fetchedProject']);
+        const fetchedProject = projectId.value ? computed(() => store.getters['project/fetchedProject']) : ref('');
 
-        const title = computed({
+        const title = projectId.value ? computed({
             get: () => fetchedProject.value.title,
             set: (value) => fetchedProject.value.title = value
-        }) || ref('');
-        const code = computed({
+        }) : ref('');
+        const code = projectId.value ? computed({
             get: () => fetchedProject.value.code,
             set: (value) => fetchedProject.value.code = value
-        }) || ref('');
-        const description = computed({
+        }) : ref('');
+        const description = projectId.value ? computed({
             get: () => fetchedProject.value.description,
             set: (value) => fetchedProject.value.description = value
-        }) || ref('');
+        }) : ref('');
 
         const user = ref('');
-        const team: WritableComputedRef<{id: number, email: string}[]> =
+        const team: any = reactive([]);
+        const fetchedTeam: WritableComputedRef<{id: number, email: string}[]> = projectId.value ?
             computed({
                 get: () => fetchedProject.value.team,
                 set: (value) => fetchedProject.value.team = value
-            }) || reactive([]);
+            }) : computed({
+                get: () => team,
+                set: (value) => team.push(value)
+            });
+
+        // const team: WritableComputedRef<> = computed(() => []);
 
 
         const submitHandler = () => {
-            const memberIds = team.value.map(member => member.id);
+            const memberIds = fetchedTeam.value.map(member => member.id);
             const userId = store.getters['auth/userId'];
             const newProject: IProject = {
                 id: userId,
@@ -109,12 +124,13 @@ export default defineComponent({
                 team: memberIds
             };
             store.dispatch('project/createProject', newProject);
+
             router.replace('/projects');
         }
 
         const choose = (value: any) => {
-            if (team.value.findIndex(member => member.id === value.id.value) === -1)
-                team.value.push(value);
+            if (fetchedTeam.value.findIndex(member => member.id === value.id.value) === -1)
+                fetchedTeam.value.push(value);
         }
 
         const blur = () => {
@@ -122,8 +138,8 @@ export default defineComponent({
         }
 
         const deleteUser = (value: number) => {
-            const id = team.value.findIndex(member => member.id === value);
-            team.value.splice(id, 1);
+            const id = fetchedTeam.value.findIndex(member => member.id === value);
+            fetchedTeam.value.splice(id, 1);
         }
 
         return {
@@ -132,7 +148,7 @@ export default defineComponent({
             code,
             description,
             user,
-            team,
+            team: fetchedTeam,
             choose,
             blur,
             deleteUser,

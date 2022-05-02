@@ -10,6 +10,7 @@ class UserState {
     timer = 0;
     autoLogout = false;
     isAuthenticated = false;
+    currentProject: number | null = null;
 }
 
 class UserGetters extends Getters<UserState> {
@@ -19,8 +20,14 @@ class UserGetters extends Getters<UserState> {
     get userId() {
         return this.state.userId;
     }
+    get token() {
+        return this.state.token;
+    }
     get isAuthenticated() {
         return this.state.isAuthenticated;
+    }
+    get currentProject() {
+        return this.state.currentProject;
     }
 }
 
@@ -35,6 +42,9 @@ class UserMutations extends Mutations<UserState> {
     }
     setIsAuthenticated(value: boolean) {
         this.state.isAuthenticated = value;
+    }
+    setCurrentProject(projectId: number | null) {
+        this.state.currentProject = projectId;
     }
 }
 
@@ -63,6 +73,7 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
             this.commit('setUser', {id: user.id, token: token, seconds: expirationDate});
             this.commit('setAutoLogout', false);
             this.commit('setIsAuthenticated', true);
+            this.commit('setCurrentProject', user.currentProject);
             
             this.state.timer = setTimeout(() => {
                 this.dispatch('logout');
@@ -73,11 +84,23 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
         }
         
     }
-    tryLogin() {
+    
+    async tryLogin() {
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
         const expirationDate = localStorage.getItem('expirationDate');
-
+        let projectId: number | null = null;
+        
+        if (userId) {
+            try {
+                await this.dispatch('fetchCurrentProject', +userId);
+            } catch (err) {
+                console.log(err);
+            }
+            projectId = this.state.currentProject;
+            this.commit('setCurrentProject', projectId);
+        }
+    
         if (expirationDate && userId && token) {
             const expiresIn = +expirationDate - new Date().getTime();
     
@@ -94,6 +117,7 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
         }
         
     }
+    
     logout() {
         localStorage.removeItem('userId');
         localStorage.removeItem('token');
@@ -103,9 +127,20 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
         this.commit('setUser', {id: null, token: null, seconds: null});
         this.commit('setIsAuthenticated', false);
     }
+    
     autoLogout() {
         this.dispatch('logout');
         this.commit('setAutoLogout', true);
+    }
+    
+    async fetchCurrentProject(userId: number) {
+        try {
+            const url = `http://localhost:5000/api/users/${userId}/current-project`;
+            const response = await axios.get(url);
+            this.commit('setCurrentProject', response.data.currentProject);
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
 

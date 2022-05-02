@@ -1,5 +1,5 @@
 <template>
-    <base-container>
+    <base-container class="center">
         <form @submit.prevent="submitHandler">
             <div v-if="!isLoginMode" class="fields">
                 <the-input
@@ -122,7 +122,7 @@ export default defineComponent({
 @import '../../assets/styles.scss';
 
 .base-container {
-    width: 100%;
+    width: 95%;
 }
 
 form {

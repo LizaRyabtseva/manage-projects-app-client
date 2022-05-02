@@ -34,7 +34,7 @@
                    @blur="blurHandler"
             />
             <span @click="deleteHandler"
-                  v-if="disabled"
+                  v-if="deleted"
                   class="material-icons"
             >clear</span>
             <Transition name="label">
@@ -84,9 +84,14 @@ export default defineComponent({
             default: false,
             type: Boolean,
             required: false
+        },
+        deleted: {
+            default: false,
+            type: Boolean,
+            required: false
         }
     },
-    emits: ['update:modelValue', 'blur', 'focus', 'search', 'deleteUser'],
+    emits: ['update:modelValue', 'blur', 'focus', 'search', 'deleteValue'],
     setup(props, {emit}) {
         const isFocus = ref(false);
         const input = ref();
@@ -132,7 +137,7 @@ export default defineComponent({
         };
 
         const deleteHandler = (value: number) => {
-            emit('deleteUser', value);
+            emit('deleteValue', value);
         }
 
         const focusInput = () => {

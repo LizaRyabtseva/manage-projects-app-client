@@ -1,14 +1,13 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import routesMap from "@/models/routes";
 // import {useStore} from "vuex";
-
 import Authorization from '../components/auth/Authorization.vue';
 import CreateProject from '../components/project/CreateProject.vue';
 import AllProjects from '../components/project/AllProjects.vue';
-// import CreateTicket from '../components/task/CreateTicket.vue';
+import CreateTask from '../components/task/CreateTask.vue';
 // import TicketsList from '../components/task/TicketsList.vue';
-// import Sprint from '../components/sprint/TheSprint.vue';
 // import TicketPage from '../components/task/TicketPage.vue';
+import StatusItem from '../components/sprint/StatusItem.vue';
 
 const routes: Array<RouteRecordRaw> = [{
     path: routesMap.auth,
@@ -22,9 +21,17 @@ const routes: Array<RouteRecordRaw> = [{
     //     projectId: 5
     // }
 }, {
-    path: '/projects',
+    path: routesMap.projects,
     name: 'projects',
     component: AllProjects
+}, {
+    path: routesMap.createTask,
+    name: 'createTask',
+    component: CreateTask
+}, {
+    path: routesMap.createSprint,
+    name: 'createSprint',
+    component: StatusItem
 }];
 // , {
 //     path: '/create-task',

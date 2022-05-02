@@ -1,14 +1,16 @@
 import {createStore, Module} from "vuex-smart-module";
-import {projectModule} from '@/store/modules/project';
 import {authModule} from "@/store/modules/auth";
 import {apiModule} from "@/store/modules/api";
+import {projectModule} from '@/store/modules/project';
+import {taskModule} from "@/store/modules/task";
 
 
 export const root = new Module({
     modules: {
-        project: projectModule,
         auth: authModule,
-        api: apiModule
+        api: apiModule,
+        project: projectModule,
+        task: taskModule,
     }
 });
 

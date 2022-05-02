@@ -14,9 +14,14 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .base-container {
-    width: 84%;
-    margin: 20px;
-    margin-bottom: 0;
-
+    width: 80%;
+    margin: 20px 20px 0 20px;
+    position: absolute;
+    top: 58px;
+    left: 250px;
+    
+    &.center {
+        left: 0;
+    }
 }
 </style>

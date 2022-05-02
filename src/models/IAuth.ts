@@ -1,8 +1,7 @@
 import IUser from "@/models/IUser";
-import IUserShort from "@/models/IUserShort";
 
 export default interface IAuth {
-    userData: IUser | IUserShort;
+    userData: Partial<IUser>;
     mode: string;
     expiresIn?: Date;
 }

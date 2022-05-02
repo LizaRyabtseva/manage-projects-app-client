@@ -11,7 +11,7 @@
         @delete-user="deleteHandler"
     />
 <!--    </form>-->
-    <results-container v-if="show && category === 'users'" :class="size">
+    <results-container v-if="show && (category === 'users' || category === 'usersInProject')" :class="size">
         <result-item v-for="user in foundData" :id="user.id" :key="user.id"
                      :value="user.email"
                      @choose="chooseHandler"/>
@@ -63,7 +63,7 @@ export default defineComponent({
         const store = useStore();
 
         let foundData;
-        if (category.value === 'users') {
+        if (category.value === 'users' || category.value === 'usersInProject') {
            foundData = computed(() => store.getters['api/foundUsers']);
         } else if (category.value === 'projects') {
             foundData = computed(() => store.getters['api/foundProjects']);
@@ -77,7 +77,12 @@ export default defineComponent({
         
         const searchHandler = (value: string) => {
             if (value.length > 2) {
-                store.dispatch('api/searchHandler', {category: category.value, value});
+                let payload: {category: string, value: string, projectId?: number} = {category: category.value, value};
+                if (category.value === 'usersInProject') {
+                    const projectId: number = store.getters['auth/currentProject'];
+                    payload = {...payload, projectId};
+                }
+                store.dispatch('api/searchHandler', payload);
                 toggleShow(true);
             } else {
                 toggleShow(false);

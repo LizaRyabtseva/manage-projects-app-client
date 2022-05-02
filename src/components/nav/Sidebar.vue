@@ -49,14 +49,15 @@ export default defineComponent({
 @import '../../assets/styles';
 
 @mixin setAlignment {
-    padding: 30px 20px;
+    padding: 20px;
 }
 
 .sidebar-content {
     background-color: $color-light;
-    height: 92vh;
-    //height: 100vh;
-    //position: fixed;
+    //height: 92vh;
+    height: 100vh;
+    position: absolute;
+    top: 58px;
     width: 16.2%;
     display: flex;
     flex-direction: column;
@@ -71,13 +72,12 @@ export default defineComponent({
     background: inherit;
 }
 
-.sidebar-header {
+.sidebar-header, .sidebar-footer {
     @include setAlignment;
     @include setBorder(1px, 'bottom', $color-border);
 }
 
 .sidebar-footer {
-    @include setAlignment;
     @include setBorder(1px, 'top', $color-border);
 }
 </style>

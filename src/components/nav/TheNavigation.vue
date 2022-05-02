@@ -30,7 +30,5 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-h4 {
-    font-weight: 500;
-}
+@import "../../assets/styles";
 </style>

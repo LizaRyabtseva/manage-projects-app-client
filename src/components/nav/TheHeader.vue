@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, ref} from "vue";
+import {defineComponent, inject} from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 import routesMap from "@/models/routes";
@@ -58,7 +58,10 @@ export default defineComponent({
 @import "../../assets/styles";
 nav {
     background-color: $color-primary;
-    border-bottom: 1px solid$color-border;
+    border-bottom: 1px solid $color-border;
+    position: absolute;
+    top: 0;
+    width: 100%;
     
     &::after {
         content: "";

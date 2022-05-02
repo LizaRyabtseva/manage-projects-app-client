@@ -1,7 +1,7 @@
 <template>
     <base-container>
         <h4>Create a new project</h4>
-        <form @submit.prevent="submitHandler">
+        <form class="create-form" @submit.prevent="submitHandler">
             <div class="form-fields">
                 <the-input
                     label-placeholder="Project title"
@@ -20,14 +20,14 @@
                     textarea
                 ></the-input>
                 <the-search
-                    label-placeholder="User's E-mail"
+                    label-placeholder="Users E-mails"
                     category="users"
                     size="large"
                     v-model="user"
                     @choose="choose"
                     @blur="blur"
                 />
-                <p class="team-title">Team</p>
+                <p class="search-title">Team</p>
                 <the-input
                     v-for="member in team"
                     :key="member.id"
@@ -35,7 +35,8 @@
                     v-model="member.email"
                     size="large"
                     disabled
-                    @delete-user="deleteUser(member.id)"
+                    deleted
+                    @delete-value="deleteUser(member.id)"
                 />
             </div>
             <div class="action">
@@ -53,8 +54,7 @@ import {
     computed,
     onMounted,
     WritableComputedRef,
-    ReactiveEffect,
-    toRefs, watch
+    toRefs
 } from "vue";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
@@ -116,14 +116,21 @@ export default defineComponent({
         const submitHandler = () => {
             const memberIds = fetchedTeam.value.map(member => member.id);
             const userId = store.getters['auth/userId'];
-            const newProject: IProject = {
-                id: userId,
+            const token = store.getters['auth/token'];
+            const project: IProject = {
+                id: projectId.value ? projectId.value : -1,
+                user: userId,
                 title: title.value,
                 code: code.value,
                 description: description.value,
                 team: memberIds
             };
-            store.dispatch('project/createProject', newProject);
+            
+            if (projectId.value) {
+                store.dispatch('project/updateProject', {project, token});
+            } else {
+                store.dispatch('project/createProject', {project, token});
+            }
 
             router.replace('/projects');
         }
@@ -161,40 +168,5 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../../assets/styles";
 
-form {
-    @include setBorder(1px, 'all', $color-border);
-    width: 50%;
-    margin: 0 auto;
-    box-shadow: 2px 5px 6px 1px $color-border;
-    border-radius: 3px;
-}
-
-.form-fields {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.action {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-}
-
-//.team {
-//    @include setBorder(1px, 'all', $color-border);
-//    display: flex;
-//    flex-direction: column;
-//    //color: $color-dark;
-//}
-
-.team-title {
-    color: darken($color-primary, 25%);
-    width: 90%;
-    margin-top: 20px;
-    font-size: 80%;
-    //margin: 0 auto;
-}
 
 </style>

@@ -59,16 +59,36 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         }
     }
     
-    async createProject(data: IProject) {
+    async createProject(data: {project: IProject, token: string}) {
         try {
-            const token = ''; // получить токен из текущего пользователя
-            const response = await axios.post(`http://localhost:5000/projects/create`,
-                data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`}
-                });
+            const {project, token} = data; // получить токен из текущего пользователя
+            const url = `http://localhost:5000/projects`;
+            const response = await axios.post(url,
+                project, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // Authorization: `Bearer ${token}`
+                        }
+                    });
             
+        } catch (err) {
+            console.log(err.response);
+            console.log(err.message);
+        }
+    }
+    
+    async updateProject(data: {project: IProject, token: string}) {
+        try {
+            const {project, token} = data; // получить токен из текущего пользователя
+            
+            const url = `http://localhost:5000/projects/${project.id}`;
+
+            const response = await axios.patch(url,
+                data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`}
+                });
         } catch (err) {
             console.log(err.response);
             console.log(err.message);
@@ -77,7 +97,7 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
     
     async fetchProject(id: number) {
         try {
-            const response = await axios.get(`http://localhost:5000/projects/project/${id}`);
+            const response = await axios.get(`http://localhost:5000/projects/${id}`);
             const project = response.data.project;
     
             this.commit('setFetchedProject', project);

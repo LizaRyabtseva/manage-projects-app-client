@@ -2,12 +2,14 @@ import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import routesMap from "@/models/routes";
 // import {useStore} from "vuex";
 import Authorization from '../components/auth/Authorization.vue';
-import CreateProject from '../components/project/CreateProject.vue';
+import EditProject from '../components/project/EditProject.vue';
 import AllProjects from '../components/project/AllProjects.vue';
-import CreateTask from '../components/task/CreateTask.vue';
+import EditTask from '../components/task/EditTask.vue';
+// import TheDashboard from '../components/sprint/TheDashboard.vue';
+import TheDashboard from '../components/dashboard/TheDashboard.vue';
 // import TicketsList from '../components/task/TicketsList.vue';
 // import TicketPage from '../components/task/TicketPage.vue';
-import StatusItem from '../components/sprint/StatusItem.vue';
+import StatusContainer from '../components/dashboard/StatusContainer.vue';
 
 const routes: Array<RouteRecordRaw> = [{
     path: routesMap.auth,
@@ -15,10 +17,10 @@ const routes: Array<RouteRecordRaw> = [{
     component: Authorization
 }, {
     path: routesMap.createProject,
-    name: 'createProject',
-    component: CreateProject,
+    name: 'editProject',
+    component: EditProject,
     // props: {
-    //     projectId: 5
+    //     projectId: 2
     // }
 }, {
     path: routesMap.projects,
@@ -26,12 +28,24 @@ const routes: Array<RouteRecordRaw> = [{
     component: AllProjects
 }, {
     path: routesMap.createTask,
-    name: 'createTask',
-    component: CreateTask
+    name: 'editTask',
+    component: EditTask,
+    props: {
+        projectId: 1,
+        sprintId: 1,
+        // taskId: 3
+    }
 }, {
     path: routesMap.createSprint,
     name: 'createSprint',
-    component: StatusItem
+    component: StatusContainer
+}, {
+    path: routesMap.dashboard,
+    name: 'dashboard',
+    component: TheDashboard,
+    props: {
+        sprintId: 1
+    }
 }];
 // , {
 //     path: '/create-task',

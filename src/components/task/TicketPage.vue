@@ -11,7 +11,7 @@
         </div>
         <h2>Details</h2>
         <div class="column">
-            <p class="information-title">Status</p>
+            <p class="information-title">TaskStatus</p>
             <p class="information-value">{{ ticket.status }}</p>
         </div>
         <div class="column">

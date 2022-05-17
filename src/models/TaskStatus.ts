@@ -1,8 +1,8 @@
-enum Status {
+enum TaskStatus {
     todo = 'To do',
     inProgress = 'In progress',
     inReview = 'In review',
     done = 'Done'
 }
 
-export default Status;
+export default TaskStatus;

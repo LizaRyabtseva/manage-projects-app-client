@@ -5,7 +5,8 @@
          </span>
         <span v-else class="item">{{ project.title }}</span>
         <span class="item">{{ project.code }}</span>
-        <span class="item">{{ project.user.login || project.user }}</span>
+        <span class="item">{{ project.status }}</span>
+        <span class="item">{{ project.user.name || project.user }}</span>
     </div>
 </template>
 
@@ -22,6 +23,11 @@ export default defineComponent({
             required: true
         },
         to: {
+            default: null,
+            type: String,
+            required: false
+        },
+        status: {
             default: null,
             type: String,
             required: false

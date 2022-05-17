@@ -3,6 +3,7 @@ import {authModule} from "@/store/modules/auth";
 import {apiModule} from "@/store/modules/api";
 import {projectModule} from '@/store/modules/project';
 import {taskModule} from "@/store/modules/task";
+import {sprintModule} from "@/store/modules/sprint";
 
 
 export const root = new Module({
@@ -10,6 +11,7 @@ export const root = new Module({
         auth: authModule,
         api: apiModule,
         project: projectModule,
+        sprint: sprintModule,
         task: taskModule,
     }
 });
@@ -41,7 +43,7 @@ export const store = createStore(root);
 //     }
 // };
 //
-// enum Status {
+// enum TaskStatus {
 //     TODO = 'TO DO',
 //     INPROGRESS = 'IN PROGRESS',
 //     TESTING = 'TESTING',
@@ -51,7 +53,7 @@ export const store = createStore(root);
 // export interface State {
 //     projects: Array<Project>;
 //     tickets: Array<Ticket>;
-//     statuses: Array<Status>;
+//     statuses: Array<TaskStatus>;
 // }
 //
 // export default createStore<State>({
@@ -194,7 +196,7 @@ export const store = createStore(root);
 //                 },
 //
 //             ],
-//             statuses: [Status.TODO, Status.INPROGRESS, Status.TESTING, Status.DONE],
+//             statuses: [TaskStatus.TODO, TaskStatus.INPROGRESS, TaskStatus.TESTING, TaskStatus.DONE],
 //
 //         }
 //     },

@@ -11,6 +11,7 @@
             :id="pr.id"
             :project="pr"
             to="#"
+            :status="pr.status"
         >
         </project-item>
     </div>

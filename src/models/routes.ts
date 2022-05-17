@@ -4,6 +4,7 @@ enum routesMap {
     project = '/projects/:id',
     createProject = '/projects/create',
     updateProject = '/projects/update/:id',
+    dashboard = '/sprints/:sprintId',
     createSprint = '/projects/:projectId/sprints/create',
     updateSprint = '/projects/:projectId/sprints/update/:id',
     updateBacklog = '/projects/:projectId/backlog/update/:id',

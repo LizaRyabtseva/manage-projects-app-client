@@ -1,6 +1,7 @@
 import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import axios from 'axios';
 import IAuth from "@/models/IAuth";
+import IProject from "@/models/IProject";
 // import IUser from "@/models/IUser";
 
 class UserState {
@@ -10,7 +11,7 @@ class UserState {
     timer = 0;
     autoLogout = false;
     isAuthenticated = false;
-    currentProject: number | null = null;
+    currentProject: Partial<IProject> | null = {};
 }
 
 class UserGetters extends Getters<UserState> {
@@ -43,7 +44,7 @@ class UserMutations extends Mutations<UserState> {
     setIsAuthenticated(value: boolean) {
         this.state.isAuthenticated = value;
     }
-    setCurrentProject(projectId: number | null) {
+    setCurrentProject(projectId: Partial<IProject> | null) {
         this.state.currentProject = projectId;
     }
 }
@@ -56,31 +57,49 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
             const url = mode === 'signup' ?
                 'http://localhost:5000/join/sign-up' :
                 'http://localhost:5000/join/login';
-           
+    
             const response = await axios.post(url, userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            
-            const {user, token, expiration} = response.data; //6h
-            const expirationDate: number = expiration + new Date().getTime();
-            
-            localStorage.setItem('userId', user.id);
-            localStorage.setItem('token', token);
-            localStorage.setItem('expirationDate', expirationDate.toString());
-            
-            this.commit('setUser', {id: user.id, token: token, seconds: expirationDate});
-            this.commit('setAutoLogout', false);
-            this.commit('setIsAuthenticated', true);
-            this.commit('setCurrentProject', user.currentProject);
-            
-            this.state.timer = setTimeout(() => {
-                this.dispatch('logout');
-            }, expiration);
+            // alert(response.data.message)
+            // if (response.statusText === 'OK') {
+                const {user, token, expiration} = response.data; //6h
+                const expirationDate: number = expiration + new Date().getTime();
+        
+                localStorage.setItem('userId', user.id);
+                localStorage.setItem('token', token);
+                localStorage.setItem('expirationDate', expirationDate.toString());
+        
+                this.commit('setUser', {id: user.id, token: token, seconds: expirationDate});
+                this.commit('setAutoLogout', false);
+                this.commit('setIsAuthenticated', true);
+                let currentProject: Partial<IProject> | null = null;
+        
+                try {
+                    await this.dispatch('fetchCurrentProject', user.id);
+                } catch (err) {
+                    console.log(err);
+                }
+        
+                currentProject = this.state.currentProject;
+                this.commit('setCurrentProject', currentProject);
+        
+                this.state.timer = setTimeout(() => {
+                    this.dispatch('logout');
+                }, expiration);
+            //     return true;
+            // } else {
+            //     return false;
+            // }
         } catch (err) {
-            console.log(err.response);
-            console.log(err.message);
+            // console.log(err.response.data.message);
+            throw err.response.data.message;
+            // const error = new Error(err.message || 'Failed to authenticate. Check your login data.');
+            // throw error;
+            // console.log(err.response);
+            // console.log(err.message);
         }
         
     }
@@ -89,7 +108,7 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
         const expirationDate = localStorage.getItem('expirationDate');
-        let projectId: number | null = null;
+        let currentProject: Partial<IProject> | null = null;
         
         if (userId) {
             try {
@@ -97,8 +116,8 @@ class UserActions extends Actions<UserState, UserGetters, UserMutations, UserAct
             } catch (err) {
                 console.log(err);
             }
-            projectId = this.state.currentProject;
-            this.commit('setCurrentProject', projectId);
+            currentProject = this.state.currentProject;
+            this.commit('setCurrentProject', currentProject);
         }
     
         if (expirationDate && userId && token) {

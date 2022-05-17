@@ -126,7 +126,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/styles";
+@import "../../../assets/styles";
 .select-label-con {
     &.small {
         width: 30%;

@@ -1,6 +1,7 @@
 import Priority from "@/models/Priority";
-import Status from "@/models/Status";
+import TaskStatus from "@/models/TaskStatus";
 import Type from "@/models/Type";
+import IUser from "@/models/IUser";
 
 export default interface ITask {
     id: number,
@@ -9,10 +10,11 @@ export default interface ITask {
     description: string,
     estimation: number,
     priority: Priority,
-    status: Status,
+    status: TaskStatus,
     type: Type,
     sprintId: number | null,
     backlogId: number | null,
     creatorId: number,
-    assignerId: number
+    assignerId: number,
+    assigner: Partial<IUser>[]
 }

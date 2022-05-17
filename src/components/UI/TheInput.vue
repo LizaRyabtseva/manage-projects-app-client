@@ -7,6 +7,7 @@
                       rows="4"
                       v-bind="$attrs"
                       :value="modelValue"
+                      :class="{deleted: deleted, error: error}"
                       @input="inputHandler"
                       @focus="focusHandler"
                       @blur="blurHandler"
@@ -27,8 +28,9 @@
                    v-bind="$attrs"
                    :value="modelValue"
                    :type="$attrs.type ? $attrs.type : 'text'"
-                   :class="{disabled: disabled}"
+                   :class="{deleted: deleted, error: error}"
                    :disabled="disabled"
+                   :maxlength="length"
                    @input="inputHandler"
                    @focus="focusHandler"
                    @blur="blurHandler"
@@ -40,7 +42,9 @@
             <Transition name="label">
                 <label v-if="isFocus || isValue"
                        class="input-label"
-                       @click="focusInput">{{ labelPlaceholder }}</label>
+                       :class="{error: error}"
+                       @click="focusInput">{{ labelPlaceholder }}
+                </label>
             </Transition>
         </div>
 
@@ -65,9 +69,18 @@ export default defineComponent({
             type: [String, Number],
             required: false
         },
-        color: {
-            default: 'color-border',
+        length: {
             type: String,
+            required: false
+        },
+        upper: {
+            default: false,
+            type: Boolean,
+            required: false
+        },
+        lower: {
+            default: false,
+            type: Boolean,
             required: false
         },
         size: {
@@ -89,13 +102,17 @@ export default defineComponent({
             default: false,
             type: Boolean,
             required: false
+        },
+        error: {
+            type: Boolean,
+            required: false
         }
     },
     emits: ['update:modelValue', 'blur', 'focus', 'search', 'deleteValue'],
     setup(props, {emit}) {
         const isFocus = ref(false);
         const input = ref();
-        const {textarea, modelValue} = toRefs(props);
+        const {textarea, modelValue, upper, lower} = toRefs(props);
 
         
         const isValue = computed(() => {
@@ -108,10 +125,17 @@ export default defineComponent({
         
         const inputHandler = (event: Event) => {
             let v;
-            if (!textarea)
+            if (!textarea) {
                 v = (event.target as HTMLInputElement).value;
-            else
+            } else {
                 v = (event.target as HTMLTextAreaElement).value;
+            }
+            if (upper.value) {
+                v = v.toUpperCase();
+            }
+            if (lower.value) {
+                v = v.toLowerCase();
+            }
             emit('update:modelValue', v);
         };
     
@@ -119,8 +143,9 @@ export default defineComponent({
             let v;
             if (!textarea.value) {
                 v = (event.target as HTMLInputElement).value;
-            } else
+            } else {
                 v = (event.target as HTMLTextAreaElement).value;
+            }
             emit('focus', v);
             changeFocus(true);
         };
@@ -129,8 +154,9 @@ export default defineComponent({
             let v;
             if (!textarea.value) {
                 v = (event.target as HTMLInputElement).value;
-            } else
+            } else {
                 v = (event.target as HTMLTextAreaElement).value;
+            }
             emit('blur', v);
             changeFocus(false);
 
@@ -222,15 +248,28 @@ input, textarea {
     font-size: 80%;
     padding-left: 5px;
 
-    &.disabled {
+    &.deleted {
         padding-left: 25px;
     }
     &:focus {
         outline: 0;
-        box-shadow: 0px 0px 4px 1px $color-primary;
+        box-shadow: 0 0 4px 1px $color-primary;
+        
     }
     &::placeholder {
         color: lighten($color-dark, 40%);
+    }
+    
+    &.error {
+        @include setBorder(1px, 'all', $color-bug);
+    
+        &.deleted {
+            padding-left: 25px;
+        }
+        &:focus {
+            outline: 0;
+            box-shadow: 0 0 4px 1px $color-bug;
+        }
     }
 }
 
@@ -238,6 +277,10 @@ input, textarea {
     color: darken($color-primary, 25%);
     font-size: 80%;
     padding-left: 5px;
+    
+    &.error {
+        color: $color-bug;
+    }
 }
 
 .label-enter-active {
@@ -254,5 +297,4 @@ input, textarea {
 .label-leave-to {
     opacity: 0;
 }
-
 </style>

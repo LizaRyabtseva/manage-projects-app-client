@@ -64,3 +64,16 @@ form {
     flex-direction: row;
     justify-content: flex-end;
 }
+
+.input-errors {
+    margin-top: 3px;
+    width: 90%;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.error-msg {
+    color: $color-bug;
+    //color: darken($color-primary, 25%);
+    font-size: 75%;
+}

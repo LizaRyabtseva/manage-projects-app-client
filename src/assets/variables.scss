@@ -3,6 +3,13 @@ $color-light: rgba(237, 231, 246, 0.1);
 $color-medium: #F6B6C7;
 $color-dark: #4c4f56;
 $color-border: rgba(76, 79, 86, 0.25);
+$color-epic: #9831ED;
+$color-story: #E114AE;
+$color-task: #11E457;
+$color-sub-task: #5963EE;
+$color-bug: #DD2C2C;
+$color-white: #ffffff;
+$color-status-background: rgba(216, 224, 224, 0.5);
 
 :export {
     colorPrimary: $color-primary;

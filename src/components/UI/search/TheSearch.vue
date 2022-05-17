@@ -11,13 +11,19 @@
         @delete-user="deleteHandler"
     />
 <!--    </form>-->
-    <results-container v-if="show && (category === 'users' || category === 'usersInProject')" :class="size">
-        <result-item v-for="user in foundData" :id="user.id" :key="user.id"
+    <results-container v-if="show && (category === 'users' || category === 'usersInProject')"
+                       :class="size">
+        <result-item v-for="user in foundData"
+                     :id="user.id"
+                     :key="user.id"
                      :value="user.email"
                      @choose="chooseHandler"/>
     </results-container>
-    <results-container v-else-if="show && category === 'projects'" :class="size">
-        <result-item v-for="project in foundData" :id="project.id" :key="project.id"
+    <results-container v-else-if="show && category === 'projects'"
+                       :class="size">
+        <result-item v-for="project in foundData"
+                     :id="project.id"
+                     :key="project.id"
                      :value="project.title"
                      @choose="chooseHandler(project.id)"/>
     </results-container>
@@ -79,7 +85,7 @@ export default defineComponent({
             if (value.length > 2) {
                 let payload: {category: string, value: string, projectId?: number} = {category: category.value, value};
                 if (category.value === 'usersInProject') {
-                    const projectId: number = store.getters['auth/currentProject'];
+                    const projectId: number = store.getters['auth/currentProject'].id;
                     payload = {...payload, projectId};
                 }
                 store.dispatch('api/searchHandler', payload);
@@ -101,10 +107,6 @@ export default defineComponent({
         const deleteHandler = (value: number) => {
             emit('deleteUser', value);
         }
-
-        // const choose = () => {
-        //
-        // }
         
         return {
             foundData,

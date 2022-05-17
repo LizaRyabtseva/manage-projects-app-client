@@ -1,21 +1,25 @@
 import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import axios from 'axios';
 import IProject from "@/models/IProject";
+import ProjectStatus from "@/models/ProjectStatus";
 
 
 class ProjectState {
-    projects: IProject[] = [];
-    fetchedProject: IProject = {id: 1,
+    projects: Partial<IProject>[] = [];
+    fetchedProject: Partial<IProject> = {
+        id: 1,
         title: 'rt',
         code: 'dfg',
+        status: 'Active',
         description: 'dfg',
         team: [3]
     };
     
-    projectHeader: IProject = {
+    projectHeader: Partial<IProject> = {
         id: -1,
         title: 'Project Title',
         code: 'Code',
+        status: 'Status',
         user: 'Project Lead'
     };
     
@@ -36,11 +40,11 @@ class ProjectGetters extends Getters<ProjectState> {
 }
 
 class ProjectMutations extends Mutations<ProjectState> {
-    setProjects(projects: IProject[]) {
+    setProjects(projects: Partial<IProject>[]) {
         this.state.projects = projects;
     }
     
-    setFetchedProject(project: IProject) {
+    setFetchedProject(project: Partial<IProject>) {
         this.state.fetchedProject = project;
     }
 }
@@ -59,9 +63,9 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         }
     }
     
-    async createProject(data: {project: IProject, token: string}) {
+    async createProject(data: {project: Partial<IProject>, token: string}) {
+        const {project, token} = data; // получить токен из текущего пользователя
         try {
-            const {project, token} = data; // получить токен из текущего пользователя
             const url = `http://localhost:5000/projects`;
             const response = await axios.post(url,
                 project, {
@@ -77,21 +81,35 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         }
     }
     
-    async updateProject(data: {project: IProject, token: string}) {
+    async updateProject(data: {project: Partial<IProject>, token: string}) {
+        const {project, token} = data; // получить токен из текущего пользователя
+        console.log(project);
+        let url = `http://localhost:5000/projects/${project.id}`;
         try {
-            const {project, token} = data; // получить токен из текущего пользователя
-            
-            const url = `http://localhost:5000/projects/${project.id}`;
-
             const response = await axios.patch(url,
-                data, {
+                project, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`}
+                        'Content-Type': 'application/json'
+                        // Authorization: `Bearer ${token}`
+                        }
                 });
         } catch (err) {
-            console.log(err.response);
-            console.log(err.message);
+            throw err.response.data.message;
+        }
+        
+        if (project.status === ProjectStatus.finished) {
+            url = `http://localhost:5000/projects/finish/${project.id}`;
+            try {
+                const response = await axios.patch(url, {status: project.status}, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+            } catch (err) {
+                console.log(err.response);
+                console.log(err.message);
+            }
         }
     }
     

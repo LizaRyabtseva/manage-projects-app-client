@@ -58,6 +58,7 @@ export default defineComponent({
     height: 100vh;
     position: absolute;
     top: 58px;
+    left: 0;
     width: 16.2%;
     display: flex;
     flex-direction: column;

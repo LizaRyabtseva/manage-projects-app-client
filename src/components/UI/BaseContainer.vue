@@ -18,7 +18,7 @@ export default defineComponent({
     margin: 20px 20px 0 20px;
     position: absolute;
     top: 58px;
-    left: 250px;
+    left: 17%;
     
     &.center {
         left: 0;

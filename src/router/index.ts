@@ -7,6 +7,7 @@ import AllProjects from '../components/project/AllProjects.vue';
 import EditTask from '../components/task/EditTask.vue';
 // import TheDashboard from '../components/sprint/TheDashboard.vue';
 import TheDashboard from '../components/dashboard/TheDashboard.vue';
+import TheProject from "@/components/project/TheProject.vue";
 // import TicketsList from '../components/task/TicketsList.vue';
 // import TicketPage from '../components/task/TicketPage.vue';
 import StatusContainer from '../components/dashboard/StatusContainer.vue';
@@ -46,6 +47,10 @@ const routes: Array<RouteRecordRaw> = [{
     props: {
         sprintId: 1
     }
+}, {
+    path: routesMap.project,
+    name: 'project',
+    component: TheProject
 }];
 // , {
 //     path: '/create-task',

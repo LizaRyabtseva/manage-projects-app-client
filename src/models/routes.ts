@@ -1,7 +1,7 @@
 enum routesMap {
     auth = '/join',
     projects = '/projects',
-    project = '/projects/:id',
+    project = '/projects/:projectId',
     createProject = '/projects/create',
     updateProject = '/projects/update/:id',
     dashboard = '/sprints/:sprintId',

@@ -8,12 +8,6 @@
                     size="large"
                     v-model="signupState.fullName"
                 />
-<!--                <the-input-->
-<!--                    :error="signupV.login.$errors.length > 0"-->
-<!--                    label-placeholder="Login"-->
-<!--                    size="large"-->
-<!--                    v-model="signupState.login"-->
-<!--                />-->
                 <the-input
                     :error="signupV.email.$errors.length > 0"
                     label-placeholder="E-mail"
@@ -185,6 +179,7 @@ export default defineComponent({
                     };
                     try {
                         await store.dispatch('auth/auth', {userData: data, mode: 'signup'});
+                      await router.push(routesMap.projects);
                     } catch (err) {
                         submitError.value = err;
                     }

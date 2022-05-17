@@ -8,11 +8,16 @@ class ProjectState {
     projects: Partial<IProject>[] = [];
     fetchedProject: Partial<IProject> = {
         id: 1,
-        title: 'rt',
-        code: 'dfg',
+        title: '',
+        code: '',
         status: 'Active',
-        description: 'dfg',
-        team: [3]
+        user: {
+            id: -1,
+            name: '',
+            email: ''
+        },
+        description: '',
+        team: []
     };
     
     projectHeader: Partial<IProject> = {
@@ -114,10 +119,13 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
     }
     
     async fetchProject(id: number) {
+        console.log(id);
+        const url = `http://localhost:5000/projects/${id}`;
         try {
-            const response = await axios.get(`http://localhost:5000/projects/${id}`);
+            const response = await axios.get(url);
             const project = response.data.project;
-    
+
+            console.log(project);
             this.commit('setFetchedProject', project);
         } catch (err) {
             console.log(err.response);

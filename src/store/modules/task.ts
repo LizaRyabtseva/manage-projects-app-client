@@ -9,9 +9,9 @@ class TaskState {
     tasks: Partial<ITask>;
     fetchedTask: Partial<ITask> = {
         id: -1,
-        title: 'test',
-        code: 'TES',
-        description: 'Test description',
+        title: '',
+        code: '',
+        description: '',
         estimation: 6,
         priority: Priority.low,
         status: TaskStatus.todo,
@@ -20,7 +20,12 @@ class TaskState {
         backlogId: null,
         creatorId: 1,
         assignerId: 4,
-        assigner: [{id: -1, email: 'test@mail.com'}]
+        assigner: [{id: -1, email: '', name: ''}],
+        creator: [{id: -1, email: '', name: ''}],
+        project: {
+            id: -1,
+            title: ''
+        },
     };
 }
 
@@ -79,7 +84,7 @@ class TaskActions extends Actions<TaskState, TaskGetters, TaskMutations, TaskAct
     
     async fetchTask(taskId: number) {
         const url = `http://localhost:5000/tasks/${taskId}`;
-        // const url = `http://localhost:5000/projects/${projectId}/sprints/${sprintId}/tasks/${taskId}`;
+
         try {
             const response = await axios.get(url);
             this.commit('setFetchedTask', response.data.task);
@@ -88,6 +93,8 @@ class TaskActions extends Actions<TaskState, TaskGetters, TaskMutations, TaskAct
             console.log(err.message);
         }
     }
+
+
 }
 
 export const taskModule = new Module({

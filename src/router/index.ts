@@ -30,13 +30,12 @@ const routes: Array<RouteRecordRaw> = [{
     component: AllProjects
 }, {
     path: routesMap.createTask,
+    name: 'createTask',
+    component: EditTask,
+}, {
+    path: routesMap.editTask,
     name: 'editTask',
     component: EditTask,
-    props: {
-        projectId: 1,
-        sprintId: 1,
-        // taskId: 3
-    }
 }, {
     path: routesMap.createSprint,
     name: 'createSprint',

@@ -201,7 +201,7 @@ export default defineComponent({
                 if (projectId.value) {
                     project = {
                         id: projectId.value ? projectId.value : -1,
-                        user: userId,
+                        owner: userId,
                         title: title.value,
                         code: code.value,
                         description: description.value,
@@ -217,7 +217,7 @@ export default defineComponent({
                 } else {
                     project = {
                         id: projectId.value ? projectId.value : -1,
-                        user: userId,
+                        owner: userId,
                         title: title.value,
                         code: code.value,
                         status: status.value,

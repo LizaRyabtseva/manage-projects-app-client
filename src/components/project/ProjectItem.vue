@@ -6,7 +6,7 @@
         <span v-else class="item">{{ project.title }}</span>
         <span class="item">{{ project.code }}</span>
         <span class="item">{{ project.status }}</span>
-        <span class="item">{{ project.user.name || project.user }}</span>
+        <span class="item">{{ project.owner.name || project.owner }}</span>
     </div>
 </template>
 

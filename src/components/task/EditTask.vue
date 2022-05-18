@@ -102,6 +102,7 @@ import TheSearch from "@/components/UI/search/TheSearch.vue";
 import Priority from "@/models/Priority";
 import Type from "@/models/Type";
 import TaskStatus from "@/models/TaskStatus";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
     name: "EditTask",
@@ -120,37 +121,41 @@ export default defineComponent({
             required: false
         }
     },
-    setup(props) {
-        const {projectId, sprintId, taskId} = toRefs(props);
+    setup() {
+        const route = useRoute();
+        const {projectId, taskId} = route.params;
         const store = useStore();
         const submitError = ref('');
         
         onMounted(() => {
-            if (taskId.value) {
-                store.dispatch('task/fetchTask', taskId.value);
+            if (taskId) {
+                store.dispatch('task/fetchTask', taskId);
             }
-            store.dispatch('api/countTasks', projectId.value);
+            store.dispatch('api/countTasks', projectId);
         });
         
-        const fetchedTask = taskId.value ?
+        const fetchedTask = taskId ?
             computed(() => store.getters['task/fetchedTask']) : ref('');
         
         const fetchedCountTasks = computed(() => store.getters['api/countTasks']);
         const currentProject = computed(() => store.getters['auth/currentProject']);
         
 
-        const title = taskId.value ? computed({
+        const title = taskId ? computed({
             get: () => fetchedTask.value.title,
             set: (value) => fetchedTask.value.title = value
         }) : ref('');
-        const code = computed(() => `${currentProject.value.code}-${fetchedCountTasks.value + 1}`);
+        const code = taskId ? computed({
+            get: () => fetchedTask.value.code,
+            set: (value) => fetchedTask.value.code = value
+        }) : computed(() => `${currentProject.value.code}-${fetchedCountTasks.value + 1}`);
 
-        const description = taskId.value ? computed({
+        const description = taskId ? computed({
             get: () => fetchedTask.value.description,
             set: (value) => fetchedTask.value.description = value
         }) : ref('');
         
-        const estimation = taskId.value ? computed({
+        const estimation = taskId ? computed({
             get: () => fetchedTask.value.estimation,
             set: (value) => fetchedTask.value.estimation = value
         }) : ref('');
@@ -191,8 +196,8 @@ export default defineComponent({
         
         const userSearch = ref('');
         let assigner: any = reactive([]);
-        const fetchedAssigner: WritableComputedRef<{id: number, email: string}[]> =
-            taskId.value ?
+        const fetchedAssigner: WritableComputedRef<{id: number, email: string, name: string}[]> =
+            taskId ?
                 computed({
                     get: () => fetchedTask.value.assigner,
                     set: (value) => fetchedTask.value.assigner = value
@@ -211,15 +216,15 @@ export default defineComponent({
         
         const assignerV = useVuelidate(assignerRules, {assigner});
         
-        const priority: Ref<Priority> = taskId.value ? computed({
+        const priority: Ref<Priority> = taskId ? computed({
             get: () => fetchedTask.value.priority,
             set: (value) => fetchedTask.value.priority = value
         }) : ref(Priority.low);
-        const status = taskId.value ? computed({
+        const status = taskId ? computed({
             get: () => fetchedTask.value.status,
             set: (value) => fetchedTask.value.status = value,
         }) : ref(TaskStatus.todo);
-        const type: Ref<Type> = taskId.value ? computed({
+        const type: Ref<Type> = taskId ? computed({
             get: () => fetchedTask.value.type,
             set: (value) => fetchedTask.value.type = value
         }) : ref(Type.epic);
@@ -253,7 +258,7 @@ export default defineComponent({
             
             if (isFormCorrect) {
     
-                if (taskId.value) {
+                if (taskId) {
                     const task: Partial<ITask> = {
                         title: title.value,
                         code: code.value,
@@ -264,11 +269,10 @@ export default defineComponent({
                         status: status.value,
                         assignerId: fetchedAssigner.value[0].id
                     };
-    
-                    console.log(task);
+
     
                     try {
-                        await store.dispatch('task/updateTask', {task, taskId: taskId.value});
+                        await store.dispatch('task/updateTask', {task, taskId: taskId});
                     } catch (err) {
                         submitError.value = err;
                     }
@@ -288,7 +292,7 @@ export default defineComponent({
                             task,
                             token,
                             userId,
-                            projectId: projectId.value,
+                            projectId,
                             backlogId: 1
                         });
                     } catch (err) {

@@ -11,7 +11,7 @@ class ProjectState {
         title: '',
         code: '',
         status: 'Active',
-        user: {
+        owner: {
             id: -1,
             name: '',
             email: ''
@@ -25,7 +25,7 @@ class ProjectState {
         title: 'Project Title',
         code: 'Code',
         status: 'Status',
-        user: 'Project Lead'
+        owner: 'Project Lead'
     };
     
 }

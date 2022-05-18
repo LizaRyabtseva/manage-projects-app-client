@@ -8,9 +8,9 @@ enum routesMap {
     createSprint = '/projects/:projectId/sprints/create',
     updateSprint = '/projects/:projectId/sprints/update/:id',
     updateBacklog = '/projects/:projectId/backlog/update/:id',
-    createTask = '/projects/:projectId/:backlogId/tasks/create',
-    updateTask = '/projects/:projectId/:backlogId/tasks/update/:id',
-    task = '/projects/:projectId/:backlogId/tasks/:taskId'
+    editTask = '/projects/:projectId/tasks/edit/:taskId',
+    createTask = '/projects/:projectId/tasks/create',
+    task = '/projects/:projectId/tasks/:taskId'
 }
 
 export default routesMap;

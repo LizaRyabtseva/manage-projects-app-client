@@ -3,8 +3,8 @@
         <template v-slot:header>
             <h4>Project Title</h4>
         </template>
-        <sidebar-item :to="routes.createProject">My projects</sidebar-item>
-        <sidebar-item :to="routes.projects">Dashboard</sidebar-item>
+        <sidebar-item :to="routes.projects">My projects</sidebar-item>
+        <sidebar-item :to="routes.dashboard">Dashboard</sidebar-item>
         <sidebar-item :to="routes.projects">Sprint</sidebar-item>
         <sidebar-item :to="routes.projects">Create task</sidebar-item>
         <template v-slot:footer>

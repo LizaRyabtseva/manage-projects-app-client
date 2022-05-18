@@ -5,7 +5,7 @@ export default interface IProject {
     code: string;
     status: string;
     title: string;
-    user: Partial<IUser> | string;
+    owner: Partial<IUser> | string;
     description?: string;
     team: number[],
     allTeam: number[]

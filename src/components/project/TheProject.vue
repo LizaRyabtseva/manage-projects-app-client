@@ -29,7 +29,7 @@
         </div>
         <div class="detail">
             <span class="item-title">project leader</span>
-            <span>{{project.user.name}}</span>
+            <span>{{project.owner.name}}</span>
         </div>
         <div class="detail">
             <span class="item-title">team</span>

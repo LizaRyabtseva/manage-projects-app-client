@@ -77,3 +77,43 @@ form {
     //color: darken($color-primary, 25%);
     font-size: 75%;
 }
+
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 12px 0;
+
+    &.links {
+        flex-direction: row;
+
+        a {
+            margin-right: 12px;
+            text-decoration: none;
+            color: $color-dark;
+            @include setBorder(3px, 'bottom', $color-transparent);
+
+            &:link{
+                color: $color-dark;
+            }
+
+            &.router-link-active,
+            &:hover,
+            &:active {
+                @include setHoverStyles;
+            }
+        }
+    }
+
+    .status-container {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+    }
+
+    .item-title {
+        font-size: 75%;
+        color: $color-dark;
+    }
+}

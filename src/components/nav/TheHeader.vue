@@ -2,21 +2,21 @@
     <nav>
         <ul class="nav-list">
             <li class="nav-link">
-                <RouterLink :to="routes.projects" class="nav-link">WorkBoard</RouterLink>
+                <router-link :to="routes.projects" class="nav-link">WorkBoard</router-link>
             </li>
             <li class="nav-link">
-                <RouterLink :to="routes.projects" class="nav-link">Projects</RouterLink>
+                <router-link :to="routes.projects" class="nav-link">Projects</router-link>
             </li>
         </ul>
         <the-button mode="dark" size="large">Create</the-button>
         <ul v-if="!isAuth" class="account">
             <li class="nav-link">
-                <RouterLink :to="routes.auth" class="nav-link">Login</RouterLink>
+                <router-link :to="routes.auth" class="nav-link">Login</router-link>
             </li>
         </ul>
         <ul v-else class="account">
             <li class="nav-link">
-                <RouterLink :to="routes.projects" class="nav-link">Settings</RouterLink>
+                <router-link :to="routes.projects" class="nav-link">Settings</router-link>
             </li>
             <the-button @click="logout" mode="dark" size="large">Logout</the-button>
         </ul>

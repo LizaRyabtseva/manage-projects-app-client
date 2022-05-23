@@ -19,9 +19,9 @@
         <div class="detail">
             <span class="item-title">people</span>
             <span class="item-title">assigner</span>
-            <span>{{task.assigner.name}}</span>
+            <span>{{task.assigner[0].name}}</span>
             <span class="item-title">creator</span>
-            <span>{{task.creator.name}}</span>
+            <span>{{task.creator[0].name}}</span>
         </div>
     </base-container>
 </template>

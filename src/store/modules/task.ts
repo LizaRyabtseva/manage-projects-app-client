@@ -6,7 +6,8 @@ import TaskStatus from "@/models/TaskStatus";
 import Type from "@/models/Type";
 
 class TaskState {
-    tasks: Partial<ITask>;
+    backlogTasks: Partial<ITask>;
+    sprintTasks: Partial<ITask>;
     fetchedTask: Partial<ITask> = {
         id: -1,
         title: '',
@@ -30,12 +31,28 @@ class TaskState {
 }
 
 class TaskGetters extends Getters<TaskState> {
+    get fetchedBacklogTasks() {
+        return this.state.backlogTasks;
+    }
+    
+    get fetchedSprintTasks() {
+        return this.state.sprintTasks;
+    }
+    
     get fetchedTask() {
         return this.state.fetchedTask;
     }
 }
 
 class TaskMutations extends Mutations<TaskState> {
+    setBacklogTasks(tasks: Partial<ITask>) {
+        this.state.backlogTasks = tasks;
+    }
+    
+    setSprintTasks(tasks: Partial<ITask>) {
+        this.state.sprintTasks = tasks;
+    }
+    
     setFetchedTask(task: Partial<ITask>) {
         this.state.fetchedTask = task;
     }
@@ -93,8 +110,24 @@ class TaskActions extends Actions<TaskState, TaskGetters, TaskMutations, TaskAct
             console.log(err.message);
         }
     }
-
-
+    
+    async fetchTasksBySprintId(payload: {sprintId: number, type: string}) {
+        const {sprintId, type} = payload;
+    
+        const url = `http://localhost:5000/tasks/${type}/${sprintId}`;
+        
+        try {
+            const response = await axios.get(url);
+            if (response.data.tasks) {
+                type === 'backlog' ?
+                    this.commit('setBacklogTasks', response.data.tasks) :
+                    this.commit('setSprintTasks', response.data.tasks);
+            }
+        } catch (err) {
+            console.log(err.response);
+            console.log(err.message);
+        }
+    }
 }
 
 export const taskModule = new Module({

@@ -77,11 +77,10 @@ import {
     reactive,
     computed,
     onMounted,
-    WritableComputedRef,
-    toRefs
+    WritableComputedRef
 } from "vue";
 import {useStore} from "vuex";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import useVuelidate from '@vuelidate/core';
 import {required, minLength, helpers, maxLength} from '@vuelidate/validators';
 import TheInput from "@/components/UI/TheInput.vue";
@@ -103,35 +102,36 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const {projectId} = toRefs(props);
         const store = useStore();
         const router = useRouter();
+        const route = useRoute();
+        const {projectId} = route.params;
         const submitError = ref('');
 
         onMounted(() => {
-            if (projectId.value)
-                store.dispatch('project/fetchProject', projectId.value);
+            if (projectId)
+                store.dispatch('project/fetchProject', projectId);
         });
     
-        const fetchedProject = projectId.value ?
+        const fetchedProject = projectId ?
             computed(() => store.getters['project/fetchedProject']) : ref('');
     
-        const title = projectId.value ? computed({
+        const title = projectId ? computed({
             get: () => fetchedProject.value.title,
             set: (value) => fetchedProject.value.title = value
         }) : ref('');
         
-        const code = projectId.value ? computed({
+        const code = projectId ? computed({
             get: () => fetchedProject.value.code,
             set: (value) => fetchedProject.value.code = value
         }) : ref('');
     
-        const description = projectId.value ? computed({
+        const description = projectId ? computed({
             get: () => fetchedProject.value.description,
             set: (value) => fetchedProject.value.description = value
         }) : ref('');
     
-        const status = projectId.value ? computed({
+        const status = projectId ? computed({
             get: () => fetchedProject.value.status,
             set: (value) => fetchedProject.value.status = value,
         }) : ref(ProjectStatus.active);
@@ -176,7 +176,7 @@ export default defineComponent({
         const user = ref('');
         const team: any = reactive([]);
         const fetchedTeam: WritableComputedRef<{id: number, email: string}[]> =
-            projectId.value ?
+            projectId ?
                 computed({
                     get: () => fetchedProject.value.team,
                     set: (value) => fetchedProject.value.team = value
@@ -198,9 +198,9 @@ export default defineComponent({
                 const userId = store.getters['auth/userId'];
                 const token = store.getters['auth/token'];
                 let project: Partial<IProject> = {};
-                if (projectId.value) {
+                if (projectId) {
                     project = {
-                        id: projectId.value ? projectId.value : -1,
+                        id: projectId ? +projectId : -1,
                         owner: userId,
                         title: title.value,
                         code: code.value,
@@ -216,7 +216,7 @@ export default defineComponent({
                     }
                 } else {
                     project = {
-                        id: projectId.value ? projectId.value : -1,
+                        id: projectId ? +projectId : -1,
                         owner: userId,
                         title: title.value,
                         code: code.value,
@@ -237,7 +237,6 @@ export default defineComponent({
         }
 
         const choose = (val: any) => {
-            console.log(fetchedTeam.value);
             if (fetchedTeam.value.findIndex(member => member.id === val.id.value) === -1)
                 fetchedTeam.value.push({id: val.id.value, email: val.email.value});
         }

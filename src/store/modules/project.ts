@@ -70,6 +70,7 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
     
     async createProject(data: {project: Partial<IProject>, token: string}) {
         const {project, token} = data; // получить токен из текущего пользователя
+        console.log(project);
         try {
             const url = `http://localhost:5000/projects`;
             const response = await axios.post(url,

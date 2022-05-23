@@ -4,7 +4,7 @@
         <div class="detail links">
             <router-link to="/backlog">Backlog</router-link>
             <router-link to="/sprints/1">Sprint</router-link>
-            <router-link to="/projects/create">Edit</router-link>
+            <router-link :to="`/projects/edit/${projectId}`">Edit</router-link>
         </div>
         <div class="detail">
             <span class="status-container">
@@ -61,6 +61,7 @@ export default defineComponent({
         const fetchedProject = computed(() => store.getters['project/fetchedProject']);
 
         return {
+            projectId,
             project: fetchedProject,
             status: ProjectStatus
         }

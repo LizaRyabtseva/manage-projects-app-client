@@ -39,7 +39,7 @@ export default defineComponent({
             required: true
         },
         sprintId: {
-            type: Number,
+            type: String,
             required: true
         },
         containerId: {
@@ -56,7 +56,8 @@ export default defineComponent({
         });
     
         const fetchedTasks = computed(() => store.getters['sprint/tasks']);
-        let t = computed(() => fetchedTasks.value.filter((task: any) => task.status === status.value));
+        let tasks = computed(() => fetchedTasks.value.filter((task: any) =>
+            task.status === status.value));
         
         const startDrag = (event: DragEvent, task: Partial<ITask>) => {
             if (event.dataTransfer && task.id) {
@@ -78,7 +79,7 @@ export default defineComponent({
         }
         
         return {
-            tasks: t,
+            tasks,
             startDrag,
             onDrop
         }

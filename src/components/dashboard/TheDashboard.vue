@@ -15,22 +15,27 @@
 
 <script lang="ts">
 import {defineComponent} from "vue";
+import {useRoute} from 'vue-router';
 import StatusContainer from "@/components/dashboard/StatusContainer.vue";
 import BaseContainer from "@/components/UI/BaseContainer.vue";
 import TaskStatus from "@/models/TaskStatus";
 export default defineComponent({
     name: "TheDashboard",
     components: {StatusContainer, BaseContainer},
-    props: {
-        sprintId: {
-            type: Number,
-            required: true
-        },
-    },
+    // props: {
+    //     sprintId: {
+    //         type: Number,
+    //         required: true
+    //     },
+    // },
     setup() {
+        const route = useRoute();
+        
+        const {sprintId} = route.params;
         const statuses = Object.values(TaskStatus);
         
         return {
+            sprintId,
             statuses
         }
         

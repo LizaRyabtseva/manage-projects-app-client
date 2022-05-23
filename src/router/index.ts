@@ -9,6 +9,7 @@ import EditTask from '../components/task/EditTask.vue';
 import TheDashboard from '../components/dashboard/TheDashboard.vue';
 import TheProject from "@/components/project/TheProject.vue";
 import TheTask from "@/components/task/TheTask.vue";
+import TheBacklog from "@/components/sprint/TheBacklog.vue";
 // import TicketsList from '../components/task/TicketsList.vue';
 // import TicketPage from '../components/task/TicketPage.vue';
 import StatusContainer from '../components/dashboard/StatusContainer.vue';
@@ -18,12 +19,9 @@ const routes: Array<RouteRecordRaw> = [{
     name: 'auth',
     component: Authorization
 }, {
-    path: routesMap.createProject,
+    path: routesMap.editProject,
     name: 'editProject',
-    component: EditProject,
-    props: {
-        projectId: 1
-    }
+    component: EditProject
 }, {
     path: routesMap.projects,
     name: 'projects',
@@ -55,6 +53,10 @@ const routes: Array<RouteRecordRaw> = [{
     path: routesMap.task,
     name: 'task',
     component: TheTask
+}, {
+    path: routesMap.backlog,
+    name: 'backlog',
+    component: TheBacklog 
 }];
 // , {
 //     path: '/create-task',

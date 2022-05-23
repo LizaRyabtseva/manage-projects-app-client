@@ -73,9 +73,6 @@
                 <div class="input-errors" v-for="error of descriptionV.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                 </div>
-                <div class="input-errors" v-for="error of assignerV.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                </div>
                 <div class="input-errors">
                     <div class="error-msg">{{submitError}}</div>
                 </div>
@@ -103,28 +100,16 @@ import Priority from "@/models/Priority";
 import Type from "@/models/Type";
 import TaskStatus from "@/models/TaskStatus";
 import {useRoute} from "vue-router";
+import router from "@/router";
 
 export default defineComponent({
     name: "EditTask",
     components: {TheSearch, SelectOption, TheSelect, BaseContainer, TheInput, TheButton},
-    props: {
-        projectId: {
-            type: Number,
-            required: false
-        },
-        sprintId: {
-            type: Number,
-            required: false
-        },
-        taskId: {
-            type: Number,
-            required: false
-        }
-    },
     setup() {
         const route = useRoute();
-        const {projectId, taskId} = route.params;
         const store = useStore();
+        const currentProject = computed(() => store.getters['auth/currentProject']);
+        const {projectId, taskId} = route.params;
         const submitError = ref('');
         
         onMounted(() => {
@@ -138,7 +123,6 @@ export default defineComponent({
             computed(() => store.getters['task/fetchedTask']) : ref('');
         
         const fetchedCountTasks = computed(() => store.getters['api/countTasks']);
-        const currentProject = computed(() => store.getters['auth/currentProject']);
         
 
         const title = taskId ? computed({
@@ -196,25 +180,25 @@ export default defineComponent({
         
         const userSearch = ref('');
         let assigner: any = reactive([]);
-        const fetchedAssigner: WritableComputedRef<{id: number, email: string, name: string}[]> =
+        const fetchedAssigner: WritableComputedRef<{id: number, email: string}[]> =
             taskId ?
                 computed({
                     get: () => fetchedTask.value.assigner,
                     set: (value) => fetchedTask.value.assigner = value
-            }) : computed({
-                get: () => assigner,
-                set: (value) => assigner.push(value)
-            });
+                }) : computed({
+                    get: () => assigner,
+                    set: (value) => assigner.push(value)
+                });
         
-        const assignerRules = computed(() => {
-            return {
-                assigner: {
-                    required: helpers.withMessage('Please, choose the assigner of the issue', required)
-                }
-            }
-        });
-        
-        const assignerV = useVuelidate(assignerRules, {assigner});
+        // const assignerRules = computed(() => {
+        //     return {
+        //         assigner: {
+        //             required: helpers.withMessage('Please, choose the assigner of the issue', required)
+        //         }
+        //     }
+        // });
+        //
+        // const assignerV = useVuelidate(assignerRules, {assigner});
         
         const priority: Ref<Priority> = taskId ? computed({
             get: () => fetchedTask.value.priority,
@@ -236,9 +220,9 @@ export default defineComponent({
             userSearch.value = '';
         }
         
-        const choose = (value: any) => {
+        const choose = (val: any) => {
             deleteUser();
-            fetchedAssigner.value.push(value);
+            fetchedAssigner.value.push({id: +val.id.value, email: val.email.value.toString()});
         }
         
         const deleteUser = () => {
@@ -248,8 +232,7 @@ export default defineComponent({
         const submitHandler = async () => {
             const isFormCorrect = await titleV.value.$validate() &&
                 await descriptionV.value.$validate() &&
-                await estimationV.value.$validate() &&
-                await assignerV.value.$validate();
+                await estimationV.value.$validate();
             
             submitError.value = '';
             
@@ -286,15 +269,22 @@ export default defineComponent({
                         type: type.value,
                         assignerId: fetchedAssigner.value[0].id
                     };
-                    
+                    console.log(task);
+                    console.log(token);
+                    console.log(userId);
+                    console.log(projectId);
+                    console.log(currentProject.value.backlogId);
+    
                     try {
                         await store.dispatch('task/createTask', {
                             task,
                             token,
                             userId,
                             projectId,
-                            backlogId: 1
+                            backlogId: currentProject.value.backlogId
                         });
+                       
+                        await router.replace(`/sprints/${currentProject.value.backlogId}`);
                     } catch (err) {
                         submitError.value = err;
                     }
@@ -303,6 +293,7 @@ export default defineComponent({
         }
         
         return {
+            taskId,
             title,
             code,
             description,
@@ -319,7 +310,6 @@ export default defineComponent({
             descriptionV,
             estimationV,
             submitError,
-            assignerV,
             blur,
             choose,
             deleteUser,

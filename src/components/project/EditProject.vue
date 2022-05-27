@@ -1,5 +1,6 @@
 <template>
-    <base-container>
+    <the-spinner v-if="isLoading" />
+    <base-container v-else>
         <h4>Create a new project</h4>
         <form class="create-form" @submit.prevent="submitHandler">
             <div class="form-fields">
@@ -64,7 +65,7 @@
                 </div>
             </div>
             <div class="action">
-                <the-button type="submit" mode="dark" size="large">Submit</the-button>
+                <the-button type="submit" mode="dark" size="large">{{btnTitle}}</the-button>
             </div>
         </form>
     </base-container>
@@ -77,7 +78,7 @@ import {
     reactive,
     computed,
     onMounted,
-    WritableComputedRef
+    WritableComputedRef, watch
 } from "vue";
 import {useStore} from "vuex";
 import {useRoute, useRouter} from "vue-router";
@@ -91,10 +92,11 @@ import IProject from '@/models/IProject';
 import ProjectStatus from "@/models/ProjectStatus";
 import TheSelect from "@/components/UI/select/TheSelect.vue";
 import SelectOption from "@/components/UI/select/SelectOption.vue";
+import TheSpinner from "@/components/UI/spinner/TheSpinner.vue";
 
 export default defineComponent({
     name: "EditProject",
-    components: {SelectOption, TheSelect, TheSearch, BaseContainer, TheButton, TheInput},
+    components: {TheSpinner, SelectOption, TheSelect, TheSearch, BaseContainer, TheButton, TheInput},
     props: {
         projectId: {
             type: Number,
@@ -105,16 +107,28 @@ export default defineComponent({
         const store = useStore();
         const router = useRouter();
         const route = useRoute();
+        const isLoading = ref(false);
         const {projectId} = route.params;
+        const btnTitle = projectId ? 'UPDATE' : 'SUBMIT';
         const submitError = ref('');
 
         onMounted(() => {
-            if (projectId)
+            if (projectId) {
+                isLoading.value = true;
                 store.dispatch('project/fetchProject', projectId);
+            }
         });
     
         const fetchedProject = projectId ?
             computed(() => store.getters['project/fetchedProject']) : ref('');
+    
+        watch(fetchedProject, (newValue) => {
+            if (newValue) {
+                setInterval(() => {
+                    isLoading.value = false;
+                }, 2000);
+            }
+        });
     
         const title = projectId ? computed({
             get: () => fetchedProject.value.title,
@@ -251,6 +265,8 @@ export default defineComponent({
         }
 
         return {
+            isLoading,
+            btnTitle,
             fetchedProject,
             title,
             code,

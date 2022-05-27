@@ -44,7 +44,7 @@ export default defineComponent( {
 
 button, a {
     border: none;
-    margin: 10px;
+    margin: 10px 0;
     text-decoration: none;
     font-weight: 500;
     font-family: inherit;

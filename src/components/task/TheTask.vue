@@ -23,6 +23,7 @@
             <span class="item-title">creator</span>
             <span>{{task.creator[0].name}}</span>
         </div>
+        <the-comment />
     </base-container>
 </template>
 
@@ -33,9 +34,10 @@ import TheType from "@/components/dashboard/TheType.vue";
 import ThePriority from "@/components/dashboard/ThePriority.vue";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
+import TheComment from "@/components/TheComment.vue";
 export default defineComponent({
     name: "TheTask",
-    components: {ThePriority, TheType, BaseContainer},
+    components: {TheComment, ThePriority, TheType, BaseContainer},
     setup() {
         const route = useRoute();
         const store = useStore();

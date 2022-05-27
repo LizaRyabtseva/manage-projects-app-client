@@ -31,7 +31,13 @@
 }
 
 h4 {
-    font-size: 125%;
+    font-size: 120%;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+h5 {
+    font-size: 85%;
     font-weight: 400;
     margin-bottom: 5px;
 }
@@ -63,6 +69,7 @@ form {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    margin: 0 25px;
 }
 
 .input-errors {

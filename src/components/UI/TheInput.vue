@@ -4,14 +4,14 @@
             <textarea ref="input"
                       v-if="textarea"
                       :placeholder="labelPlaceholder"
-                      rows="4"
+                      :rows="rows"
                       v-bind="$attrs"
                       :value="modelValue"
                       :class="{deleted: deleted, error: error}"
                       @input="inputHandler"
                       @focus="focusHandler"
                       @blur="blurHandler"
-            ></textarea>
+            />
             <input ref="input"
                    v-else-if="$attrs.type === 'search'"
                    :placeholder="labelPlaceholder"
@@ -105,6 +105,11 @@ export default defineComponent({
         },
         error: {
             type: Boolean,
+            required: false
+        },
+        rows: {
+            default: "4",
+            type: String,
             required: false
         }
     },
@@ -211,6 +216,12 @@ export default defineComponent({
     }
     &.large {
         width: 90%;
+        input {
+            font-size: 80%;
+        }
+    }
+    &.xlarge {
+        width: 100%;
         input {
             font-size: 80%;
         }

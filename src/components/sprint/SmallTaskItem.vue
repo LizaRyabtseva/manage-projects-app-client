@@ -2,7 +2,8 @@
     <div class="task-item">
         <div class="task-part">
             <the-type class="task-section small" :type="type" />
-            <span class="task-section">{{title}}</span>
+            <router-link class="task-section" :to="to" >{{title}}</router-link>
+<!--            <span class="task-section">{{title}}</span>-->
         </div>
         <div class="task-part">
             <span class="task-section">{{assigner}}</span>
@@ -39,7 +40,8 @@ export default defineComponent({
         assigner: {
             type: String,
             required: true
-        }, bl: {
+        },
+        to: {
             type: String,
             required: false
         }
@@ -57,24 +59,38 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../../assets/styles";
 .task-item {
-    width: 90%;
+    //width: 90%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
+    border-radius: 0.3rem;
+    margin: 5px;
     @include setBorder(1px, 'all', $color-border);
     
     .task-part {
         display: flex;
         flex-direction: row;
         align-items: center;
+    
+        a {
+            text-decoration: none;
+            color: $color-dark;
+            //font-size: 120%;
+            font-weight: 500;
+        
+            &.router-link-active,
+            &:hover {
+                color: darken($color-dark, 30);
+            }
+        
+        }
         
         .task-section {
             align-items: center;
             margin: 3px 20px;
             
             &.small {
-                width: 90px;
+                width: 115px;
             }
             
             &:first-child {

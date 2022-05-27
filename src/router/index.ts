@@ -10,6 +10,7 @@ import TheDashboard from '../components/dashboard/TheDashboard.vue';
 import TheProject from "@/components/project/TheProject.vue";
 import TheTask from "@/components/task/TheTask.vue";
 import TheBacklog from "@/components/sprint/TheBacklog.vue";
+import TheSpinner from '../components/UI/spinner/TheSpinner.vue';
 // import TicketsList from '../components/task/TicketsList.vue';
 // import TicketPage from '../components/task/TicketPage.vue';
 import StatusContainer from '../components/dashboard/StatusContainer.vue';
@@ -19,6 +20,10 @@ const routes: Array<RouteRecordRaw> = [{
     name: 'auth',
     component: Authorization
 }, {
+    path: routesMap.createProject,
+    name: 'createProject',
+    component: EditProject
+},{
     path: routesMap.editProject,
     name: 'editProject',
     component: EditProject
@@ -41,10 +46,7 @@ const routes: Array<RouteRecordRaw> = [{
 }, {
     path: routesMap.dashboard,
     name: 'dashboard',
-    component: TheDashboard,
-    props: {
-        sprintId: 1
-    }
+    component: TheDashboard
 }, {
     path: routesMap.project,
     name: 'project',
@@ -57,24 +59,11 @@ const routes: Array<RouteRecordRaw> = [{
     path: routesMap.backlog,
     name: 'backlog',
     component: TheBacklog 
+}, {
+    path: routesMap.spinner,
+    name: 'spinner',
+    component: TheSpinner
 }];
-// , {
-//     path: '/create-task',
-//     name: 'createTicket',
-//     component: CreateTicket,
-// }, {
-//     path: '/tickets',
-//     name: 'tickets',
-//     component: TicketsList
-// }, {
-//     path: '/sprint',
-//     name: 'sprint',
-//     component: Sprint
-// }, {
-//     path: '/task',
-//     name: 'task',
-//     component: TicketPage
-// }];
 
 const router = createRouter({
     history: createWebHistory(),

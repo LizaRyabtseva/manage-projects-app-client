@@ -1,7 +1,7 @@
 <template>
     <div class="project-card">
          <span v-if="to" class="item">
-                <router-link to="#">{{ project.title }}</router-link>
+                <router-link :to="to">{{ project.title }}</router-link>
          </span>
         <span v-else class="item">{{ project.title }}</span>
         <span class="item">{{ project.code }}</span>

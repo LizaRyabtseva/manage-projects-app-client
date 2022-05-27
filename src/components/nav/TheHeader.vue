@@ -8,7 +8,7 @@
                 <router-link :to="routes.projects" class="nav-link">Projects</router-link>
             </li>
         </ul>
-        <the-button mode="dark" size="large">Create</the-button>
+        <the-button class="nav-btn" mode="dark" size="large">CREATE</the-button>
         <ul v-if="!isAuth" class="account">
             <li class="nav-link">
                 <router-link :to="routes.auth" class="nav-link">Login</router-link>
@@ -18,7 +18,7 @@
             <li class="nav-link">
                 <router-link :to="routes.projects" class="nav-link">Settings</router-link>
             </li>
-            <the-button @click="logout" mode="dark" size="large">Logout</the-button>
+                <the-button class="nav-btn" @click="logout" mode="dark" size="large">LOGOUT</the-button>
         </ul>
         
     </nav>
@@ -112,4 +112,7 @@ nav {
     }
 }
 
+.nav-btn {
+    margin: 10px 20px;
+}
 </style>

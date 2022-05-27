@@ -6,8 +6,7 @@ import TaskStatus from "@/models/TaskStatus";
 import Type from "@/models/Type";
 
 class TaskState {
-    backlogTasks: Partial<ITask>;
-    sprintTasks: Partial<ITask>;
+    fetchedTasks: Partial<ITask>[] = [];
     fetchedTask: Partial<ITask> = {
         id: -1,
         title: '',
@@ -17,8 +16,7 @@ class TaskState {
         priority: Priority.low,
         status: TaskStatus.todo,
         type: Type.task,
-        sprintId: 1,
-        backlogId: null,
+        sprintId: -11,
         creatorId: 1,
         assignerId: 4,
         assigner: [{id: -1, email: '', name: ''}],
@@ -31,12 +29,16 @@ class TaskState {
 }
 
 class TaskGetters extends Getters<TaskState> {
-    get fetchedBacklogTasks() {
-        return this.state.backlogTasks;
-    }
+    // get fetchedBacklogTasks() {
+    //     return this.state.backlogTasks;
+    // }
+    //
+    // get fetchedSprintTasks() {
+    //     return this.state.sprintTasks;
+    // }
     
-    get fetchedSprintTasks() {
-        return this.state.sprintTasks;
+    get fetchedTasks() {
+        return this.state.fetchedTasks;
     }
     
     get fetchedTask() {
@@ -45,12 +47,16 @@ class TaskGetters extends Getters<TaskState> {
 }
 
 class TaskMutations extends Mutations<TaskState> {
-    setBacklogTasks(tasks: Partial<ITask>) {
-        this.state.backlogTasks = tasks;
-    }
+    // setBacklogTasks(tasks: Partial<ITask>) {
+    //     this.state.backlogTasks = tasks;
+    // }
+    //
+    // setSprintTasks(tasks: Partial<ITask>) {
+    //     this.state.sprintTasks = tasks;
+    // }
     
-    setSprintTasks(tasks: Partial<ITask>) {
-        this.state.sprintTasks = tasks;
+    setFetchedTasks(tasks: Partial<ITask>[]) {
+        this.state.fetchedTasks = tasks;
     }
     
     setFetchedTask(task: Partial<ITask>) {
@@ -59,8 +65,8 @@ class TaskMutations extends Mutations<TaskState> {
 }
 
 class TaskActions extends Actions<TaskState, TaskGetters, TaskMutations, TaskActions> {
-    async createTask(payload: {task: Partial<ITask>, token: string, userId: number,projectId: number, backlogId: number}) {
-        const {task, token, userId, projectId, backlogId} = payload;
+    async createTask(payload: {task: Partial<ITask>, token: string, userId: number,projectId: number, sprintId: number}) {
+        const {task, token, userId, projectId, sprintId} = payload;
         console.log(task);
         try {
             const url = `http://localhost:5000/tasks`;
@@ -69,7 +75,7 @@ class TaskActions extends Actions<TaskState, TaskGetters, TaskMutations, TaskAct
                 ...task,
                 userId,
                 token,
-                backlogId
+                sprintId
             }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -111,18 +117,36 @@ class TaskActions extends Actions<TaskState, TaskGetters, TaskMutations, TaskAct
         }
     }
     
-    async fetchTasksBySprintId(payload: {sprintId: number, type: string}) {
-        const {sprintId, type} = payload;
-    
-        const url = `http://localhost:5000/tasks/${type}/${sprintId}`;
+    async fetchTasksBySprintId(sprintId: number) {
+        const url = `http://localhost:5000/tasks/sprint/${sprintId}`;
         
         try {
             const response = await axios.get(url);
-            if (response.data.tasks) {
-                type === 'backlog' ?
-                    this.commit('setBacklogTasks', response.data.tasks) :
-                    this.commit('setSprintTasks', response.data.tasks);
+                this.commit('setFetchedTasks', response.data.tasks);
+        } catch (err) {
+            console.log(err.response);
+            console.log(err.message);
+        }
+    }
+    
+    async fetchTasks(payload: {
+        backlogId?: number,
+        sprintId?: number,
+    }) {
+        const {backlogId, sprintId} = payload;
+        const sprintUrl = `http://localhost:5000/tasks/sprint/${sprintId}`;
+        const backlogUrl = `http://localhost:5000/tasks/sprint/${backlogId}`;
+        try {
+            const response = [];
+            if (sprintId) {
+                const sprintResponse = await axios.get(sprintUrl);
+                response.push(...sprintResponse.data.tasks);
             }
+            if (backlogId) {
+                const backlogResponse = await axios.get(backlogUrl);
+                response.push(...backlogResponse.data.tasks);
+            }
+            this.commit('setFetchedTasks', response);
         } catch (err) {
             console.log(err.response);
             console.log(err.message);

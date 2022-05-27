@@ -14,7 +14,6 @@ export default interface ITask {
     status: TaskStatus,
     type: Type,
     sprintId: number | null,
-    backlogId: number | null,
     creatorId: number,
     assignerId: number,
     assigner: Partial<IUser>[],

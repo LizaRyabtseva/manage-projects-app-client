@@ -1,5 +1,6 @@
 <template>
-    <base-container>
+    <the-spinner v-if="isLoading" />
+    <base-container v-else>
         <h4>Create a new task</h4>
         <form class="create-form" @submit.prevent="submitHandler">
             <div class="form-fields">
@@ -30,13 +31,7 @@
                         v-for="pr in priorities"
                         :key="pr"
                         :id="pr"
-                        :value="pr" />
-                </the-select>
-                <the-select v-if="taskId" size="large" label="Status" v-model="status">
-                    <select-option
-                        v-for="st in statuses"
-                        :key="st"
-                        :id="st"
+                        :value="pr" />+-
                         :value="st" />
                 </the-select>
                 <the-select size="large" label="Type" v-model="type">
@@ -78,14 +73,14 @@
                 </div>
             </div>
             <div class="action">
-                <the-button type="submit" mode="dark" size="large">Submit</the-button>
+                <the-button type="submit" mode="dark" size="large">{{btnTitle}}</the-button>
             </div>
         </form>
     </base-container>
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, computed, Ref, toRefs, onMounted, reactive, WritableComputedRef} from "vue";
+import {defineComponent, ref, computed, Ref, toRefs, onMounted, reactive, WritableComputedRef, watch} from "vue";
 import {useStore} from "vuex";
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, helpers, numeric } from '@vuelidate/validators';
@@ -101,19 +96,23 @@ import Type from "@/models/Type";
 import TaskStatus from "@/models/TaskStatus";
 import {useRoute} from "vue-router";
 import router from "@/router";
+import TheSpinner from "@/components/UI/spinner/TheSpinner.vue";
 
 export default defineComponent({
     name: "EditTask",
-    components: {TheSearch, SelectOption, TheSelect, BaseContainer, TheInput, TheButton},
+    components: {TheSpinner, TheSearch, SelectOption, TheSelect, BaseContainer, TheInput, TheButton},
     setup() {
         const route = useRoute();
         const store = useStore();
+        const isLoading = ref(false);
         const currentProject = computed(() => store.getters['auth/currentProject']);
         const {projectId, taskId} = route.params;
         const submitError = ref('');
+        const btnTitle = taskId ? 'UPDATE' : 'SUBMIT';
         
         onMounted(() => {
             if (taskId) {
+                isLoading.value = true;
                 store.dispatch('task/fetchTask', taskId);
             }
             store.dispatch('api/countTasks', projectId);
@@ -123,7 +122,14 @@ export default defineComponent({
             computed(() => store.getters['task/fetchedTask']) : ref('');
         
         const fetchedCountTasks = computed(() => store.getters['api/countTasks']);
-        
+    
+        watch(fetchedTask, (newValue) => {
+            if (newValue) {
+                setInterval(() => {
+                    isLoading.value = false;
+                }, 2000);
+            }
+        });
 
         const title = taskId ? computed({
             get: () => fetchedTask.value.title,
@@ -190,16 +196,6 @@ export default defineComponent({
                     set: (value) => assigner.push(value)
                 });
         
-        // const assignerRules = computed(() => {
-        //     return {
-        //         assigner: {
-        //             required: helpers.withMessage('Please, choose the assigner of the issue', required)
-        //         }
-        //     }
-        // });
-        //
-        // const assignerV = useVuelidate(assignerRules, {assigner});
-        
         const priority: Ref<Priority> = taskId ? computed({
             get: () => fetchedTask.value.priority,
             set: (value) => fetchedTask.value.priority = value
@@ -255,7 +251,7 @@ export default defineComponent({
 
     
                     try {
-                        await store.dispatch('task/updateTask', {task, taskId: taskId});
+                        await store.dispatch('task/updateTask', {task, taskId});
                     } catch (err) {
                         submitError.value = err;
                     }
@@ -269,11 +265,6 @@ export default defineComponent({
                         type: type.value,
                         assignerId: fetchedAssigner.value[0].id
                     };
-                    console.log(task);
-                    console.log(token);
-                    console.log(userId);
-                    console.log(projectId);
-                    console.log(currentProject.value.backlogId);
     
                     try {
                         await store.dispatch('task/createTask', {
@@ -281,7 +272,7 @@ export default defineComponent({
                             token,
                             userId,
                             projectId,
-                            backlogId: currentProject.value.backlogId
+                            sprintId: currentProject.value.backlogId
                         });
                        
                         await router.replace(`/sprints/${currentProject.value.backlogId}`);
@@ -293,6 +284,8 @@ export default defineComponent({
         }
         
         return {
+            isLoading,
+            btnTitle,
             taskId,
             title,
             code,

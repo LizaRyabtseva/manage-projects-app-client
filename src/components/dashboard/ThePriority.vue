@@ -7,7 +7,7 @@
             keyboard_double_arrow_up
         </span>
         <span v-else-if="priority === 'Medium'" class="material-symbols-outlined">
-            density_large
+            segment
         </span>
         <span>{{priority}}</span>
     </div>

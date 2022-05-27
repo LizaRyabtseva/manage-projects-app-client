@@ -2,12 +2,14 @@ import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import axios from 'axios';
 import IUser from "@/models/IUser";
 import IProject from "@/models/IProject";
+import IComment from "@/models/IComment";
 
 class AppState {
     foundUsers: Partial<IUser>[];
     foundProjects: Partial<IProject>[];
     countTasks = 0;
     isUniqueValue = true;
+    comments: Partial<IComment>[] = [];
     
 }
 
@@ -27,6 +29,10 @@ class AppGetters extends Getters<AppState> {
     get isUniqueValue() {
         return this.state.isUniqueValue;
     }
+    
+    get comments() {
+        return this.state.comments;
+    }
 }
 
 class AppMutations extends Mutations<AppState> {
@@ -44,6 +50,10 @@ class AppMutations extends Mutations<AppState> {
     
     setIsUniqueValue(value: boolean) {
         this.state.isUniqueValue = value;
+    }
+    
+    setComments(comments: Partial<IComment>[]) {
+        this.state.comments = comments;
     }
 }
 
@@ -96,6 +106,41 @@ class AppActions extends Actions<AppState, AppGetters, AppMutations, Actions> {
             const result = response.data.valid;
             this.commit('setIsUniqueValue', result);
             
+        } catch (err) {
+            console.log(err.response);
+            console.log(err.message);
+        }
+    }
+    
+    async createComment(payload: {text: string, date: string, taskId: number, userId: number,}) {
+        console.log(payload);
+        const {text, date, taskId, userId} = payload;
+        const url = `http://localhost:5000/api/tasks/${taskId}/comment`;
+        try {
+            const response = await axios.post(url, {
+                text,
+                date,
+                userId
+            }, {
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            });
+        } catch (err) {
+            throw err.response.data.message;
+            // console.log(err.response);
+            // console.log(err.message);
+        }
+    }
+    
+    async fetchComments(taskId: number) {
+        const url = `http://localhost:5000/api/tasks/${taskId}/comments`;
+        
+        try {
+            const response = await axios.get(url);
+            if (response.data.comments) {
+                this.commit('setComments', response.data.comments);
+            }
         } catch (err) {
             console.log(err.response);
             console.log(err.message);

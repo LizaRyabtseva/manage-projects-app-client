@@ -2,8 +2,9 @@
     <base-container>
         <h4 class="project-title">{{project.title}}</h4>
         <div class="detail links">
-            <router-link to="/backlog">Backlog</router-link>
-            <router-link to="/sprints/1">Sprint</router-link>
+            <router-link :to="routes.backlog">Backlog</router-link>
+            <router-link :to="routes.dashboard">Sprint</router-link>
+<!--            edit доступно только для хозяина проекта-->
             <router-link :to="`/projects/edit/${projectId}`">Edit</router-link>
         </div>
         <div class="detail">
@@ -46,6 +47,7 @@ import {useStore} from "vuex";
 import {defineComponent, onMounted, computed} from "vue";
 import BaseContainer from "../UI/BaseContainer.vue";
 import ProjectStatus from "@/models/ProjectStatus";
+import routesMap from "@/models/routes";
 export default defineComponent({
     name: "TheProject",
     components: {BaseContainer},
@@ -63,6 +65,7 @@ export default defineComponent({
         return {
             projectId,
             project: fetchedProject,
+            routes: routesMap,
             status: ProjectStatus
         }
     }

@@ -23,21 +23,29 @@
             <span class="item-title">creator</span>
             <span>{{task.creator[0].name}}</span>
         </div>
-        <the-comment />
+        <the-comment @submit="submitHandler" />
+        <comment-container
+            class="comments"
+            v-for="comment in comments"
+            :key="comment.id"
+            :id="comment.id"
+            :comment="comment"
+        />
     </base-container>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted} from "vue";
+import {computed, defineComponent, onMounted, onUpdated} from "vue";
 import BaseContainer from "../UI/BaseContainer.vue";
 import TheType from "@/components/dashboard/TheType.vue";
 import ThePriority from "@/components/dashboard/ThePriority.vue";
 import {useRoute} from "vue-router";
 import {useStore} from "vuex";
-import TheComment from "@/components/TheComment.vue";
+import TheComment from "@/components/comment/TheComment.vue";
+import CommentContainer from "@/components/comment/CommentContainer.vue";
 export default defineComponent({
     name: "TheTask",
-    components: {TheComment, ThePriority, TheType, BaseContainer},
+    components: {CommentContainer, TheComment, ThePriority, TheType, BaseContainer},
     setup() {
         const route = useRoute();
         const store = useStore();
@@ -45,14 +53,31 @@ export default defineComponent({
 
         onMounted(() => {
             store.dispatch('task/fetchTask', taskId);
+            store.dispatch('api/fetchComments', taskId);
         });
 
         const fetchedTask = computed(() => store.getters['task/fetchedTask']);
+        const fetchedComments = computed(() => store.getters['api/fetchedComments']);
+
+        const submitHandler = (payload: {text: string, date: string, taskId: number, userId: number}) => {
+            const {text, date, taskId, userId} = payload;
+            try {
+                store.dispatch('api/createComment', {text, date, taskId, userId});
+                setInterval(() => {
+                    store.dispatch('api/fetchComments', taskId);
+                    store.dispatch('api/fetchComments', taskId);
+                }, 1500)
+            } catch (err) {
+                console.log(err);
+            }
+        }
 
         return {
+            comments: fetchedComments,
             task: fetchedTask,
             projectId,
-            taskId
+            taskId,
+            submitHandler,
         }
     },
     
@@ -63,5 +88,11 @@ export default defineComponent({
 @import "../../assets/styles";
 .task-title {
     background-color: $color-primary;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    @include setBorder(1px, 'all', $color-border);
 }
 </style>

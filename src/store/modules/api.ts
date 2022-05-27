@@ -30,7 +30,7 @@ class AppGetters extends Getters<AppState> {
         return this.state.isUniqueValue;
     }
     
-    get comments() {
+    get fetchedComments() {
         return this.state.comments;
     }
 }

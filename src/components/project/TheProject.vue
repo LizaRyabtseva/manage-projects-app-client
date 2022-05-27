@@ -6,6 +6,7 @@
             <router-link :to="routes.dashboard">Sprint</router-link>
 <!--            edit доступно только для хозяина проекта-->
             <router-link :to="`/projects/edit/${projectId}`">Edit</router-link>
+            <the-button mode="dark" size="small">Make current</the-button>
         </div>
         <div class="detail">
             <span class="status-container">
@@ -48,9 +49,10 @@ import {defineComponent, onMounted, computed} from "vue";
 import BaseContainer from "../UI/BaseContainer.vue";
 import ProjectStatus from "@/models/ProjectStatus";
 import routesMap from "@/models/routes";
+import TheButton from "@/components/UI/TheButton.vue";
 export default defineComponent({
     name: "TheProject",
-    components: {BaseContainer},
+    components: {TheButton, BaseContainer},
     setup() {
         const route = useRoute();
         const store = useStore();

@@ -70,6 +70,10 @@ form {
     flex-direction: row;
     justify-content: flex-end;
     margin: 0 25px;
+
+    & button {
+        margin: 10px 15px;
+    }
 }
 
 .input-errors {

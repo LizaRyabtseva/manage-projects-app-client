@@ -7,7 +7,7 @@
     </RouterLink>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent( {
@@ -39,12 +39,11 @@ export default defineComponent( {
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/variables";
 @import "../../assets/styles";
 
 button, a {
     border: none;
-    margin: 10px 0;
+    //margin: 10px 0;
     text-decoration: none;
     font-weight: 500;
     font-family: inherit;

@@ -65,17 +65,17 @@ export default defineComponent({
 <style scoped lang="scss">
 @import "../../assets/styles";
 
-.project-items {
-    margin-top: 40px;
-}
-
-.project-header {
-    font-weight: 600;
-}
-
-.projects-container {
-    width: 84%;
-    margin: 20px;
-}
+//.project-items {
+//    margin-top: 40px;
+//}
+//
+//.project-header {
+//    font-weight: 600;
+//}
+//
+//.projects-container {
+//    width: 84%;
+//    margin: 20px;
+//}
 
 </style>

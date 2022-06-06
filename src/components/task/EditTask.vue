@@ -1,7 +1,8 @@
 <template>
     <the-spinner v-if="isLoading" />
     <base-container v-else>
-        <h4>Create a new task</h4>
+        <h4>Edit '{{title}}' task</h4>
+<!--        <h4>Create a new task</h4>-->
         <form class="create-form" @submit.prevent="submitHandler">
             <div class="form-fields">
                 <the-input

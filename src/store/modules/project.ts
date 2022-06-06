@@ -2,15 +2,17 @@ import { Getters, Mutations, Actions, Module } from 'vuex-smart-module';
 import axios from 'axios';
 import IProject from "@/models/IProject";
 import ProjectStatus from "@/models/ProjectStatus";
+import type from "@/models/Type";
 
 
 class ProjectState {
-    projects: Partial<IProject>[] = [];
+    fetchedProjects: Partial<IProject>[] = [];
     fetchedProject: Partial<IProject> = {
         id: 1,
         title: '',
         code: '',
         status: 'Active',
+        ownerId: -2,
         owner: {
             id: -1,
             name: '',
@@ -31,8 +33,8 @@ class ProjectState {
 }
 
 class ProjectGetters extends Getters<ProjectState> {
-    get projects() {
-        return this.state.projects;
+    get fetchedProjects() {
+        return this.state.fetchedProjects;
     }
     
     get projectHeaderTable() {
@@ -45,8 +47,8 @@ class ProjectGetters extends Getters<ProjectState> {
 }
 
 class ProjectMutations extends Mutations<ProjectState> {
-    setProjects(projects: Partial<IProject>[]) {
-        this.state.projects = projects;
+    setFetchedProjects(projects: Partial<IProject>[]) {
+        this.state.fetchedProjects = projects;
     }
     
     setFetchedProject(project: Partial<IProject>) {
@@ -56,12 +58,26 @@ class ProjectMutations extends Mutations<ProjectState> {
 
 class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutations, ProjectActions> {
     async fetchProjects() {
+        const url = 'http://localhost:5000/projects';
         try {
-            const response = await axios.get('http://localhost:5000/projects');
+            const response = await axios.get(url);
             const projects = response.data.projects;
             
-            this.commit('setProjects', projects);
+            this.commit('setFetchedProjects', projects);
             
+        } catch (err) {
+            console.log(err.response);
+            console.log(err.message);
+        }
+    }
+    
+    async fetchProjectByUserId(userId: number) {
+        const url = `http://localhost:5000/projects/users/${userId}`;
+        try {
+            const response = await axios.get(url);
+            if (response.data.projects) {
+                this.commit('setFetchedProjects', response.data.projects);
+            }
         } catch (err) {
             console.log(err.response);
             console.log(err.message);
@@ -102,7 +118,7 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         } catch (err) {
             throw err.response.data.message;
         }
-        
+        console.log(project.status);
         if (project.status === ProjectStatus.finished) {
             url = `http://localhost:5000/projects/finish/${project.id}`;
             try {
@@ -125,16 +141,35 @@ class ProjectActions extends Actions<ProjectState, ProjectGetters, ProjectMutati
         try {
             const response = await axios.get(url);
             const project = response.data.project;
-
-            console.log(project);
+            
             this.commit('setFetchedProject', project);
         } catch (err) {
             console.log(err.response);
             console.log(err.message);
         }
     }
-     // this.commit('changeProject', payload);
+    
+    async makeCurrentProject(payload: {projectId: number, userId: number}) {
+        const {projectId, userId} = payload;
+        const url = `http://localhost:5000/projects/make-current-project`;
+        try {
+            const response = await axios.patch(url, {
+                projectId,
+                userId
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Authorization: `Bearer ${token}`
+                }
+            });
+        } catch (err) {
+            throw err.response.data.message;
+            // console.log(err.response);
+            // console.log(err.message);
+        }
+    }
 }
+
 
 export const projectModule = new Module({
     state: ProjectState,

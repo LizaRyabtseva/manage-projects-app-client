@@ -225,6 +225,9 @@ export default defineComponent({
         input {
             font-size: 80%;
         }
+        textarea {
+            min-height: 90px;
+        }
     }
 }
 
@@ -238,7 +241,6 @@ export default defineComponent({
         &:hover {
             cursor: pointer;
         }
-
     }
     &.label {
         min-height: 55px;

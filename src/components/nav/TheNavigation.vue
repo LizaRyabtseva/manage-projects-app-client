@@ -1,16 +1,16 @@
 <template>
     <sidebar default-index="1" static-position>
         <template v-slot:header>
-            <h4>Project Title</h4>
+            <h4 class="project-title">PetSafe</h4>
         </template>
-        <sidebar-item :to="routes.projects">My projects</sidebar-item>
+        <sidebar-item :to="routes.myProjects">My projects</sidebar-item>
         <sidebar-item :to="routes.createProject">Create project</sidebar-item>
         <sidebar-item :to="routes.dashboard">Dashboard</sidebar-item>
         <sidebar-item :to="routes.backlog">Backlog</sidebar-item>
         <sidebar-item :to="`/projects/${project.id}/tasks/create`">Create task</sidebar-item>
-        <template v-slot:footer>
-<!--         logout remove-->
-        </template>
+<!--        <template v-slot:footer>-->
+<!--&lt;!&ndash;         logout remove&ndash;&gt;-->
+<!--        </template>-->
     </sidebar>
 </template>
 
@@ -39,4 +39,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @import "../../assets/styles";
+.project-title {
+    color: darken($color-primary, 25%);
+}
 </style>

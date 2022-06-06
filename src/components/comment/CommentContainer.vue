@@ -1,5 +1,5 @@
 <template>
-    <div class="comment-container">
+    <div class="comment">
         <div>
             <span class="name">{{comment.user.name}}</span>
             <span class="date">{{comment.date}}</span>
@@ -27,6 +27,7 @@ export default defineComponent({
 .name {
     margin: 5px 10px;
     font-size: 90%;
+    color: darken($color-primary, 25%);
 }
 
 .date {
@@ -37,5 +38,10 @@ export default defineComponent({
 
 .text {
     margin: 5px 10px;
+}
+
+.comment {
+    margin-right: 200px;
+    //padding-right: 200px;
 }
 </style>

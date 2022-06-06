@@ -29,6 +29,13 @@
                     type="password"
                     v-model="signupState.passwordConfirmation"
                 />
+<!--                <the-input-->
+<!--                    :error="signupV.avatar.$errors.length > 0"-->
+<!--                    type="file"-->
+<!--                    label-placeholder="Upload avatar"-->
+<!--                    size="large"-->
+<!--                    v-model="signupState.avatar"-->
+<!--                />-->
                 <div class="input-errors" v-for="error of signupV.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -57,8 +64,8 @@
                 </div>
             </div>
             <div class="action">
-                <the-button mode="dark" size="large">{{ btnTitle }}</the-button>
-                <the-button type="button" @click="switchAuthMode" mode="dark" size="large">{{ switchTitle }}</the-button>
+                <the-button with-margin mode="dark" size="large">{{ btnTitle }}</the-button>
+                <the-button with-margin type="button" @click="switchAuthMode" mode="dark" size="large">{{ switchTitle }}</the-button>
             </div>
         </form>
     </base-container>
@@ -85,7 +92,8 @@ export default defineComponent({
             fullName: '',
             email: '',
             password: '',
-            passwordConfirmation: ''
+            passwordConfirmation: '',
+            // avatar: ''
         });
         
         const loginState = reactive({
@@ -107,28 +115,32 @@ export default defineComponent({
             () => isUnique(signupState.email, 'email'));
         
         const signupRules = computed(() => {
-            return { fullName: {
-                required: helpers.withMessage('Name field is required', required),
-                minLength: helpers.withMessage('Name field should be at least 3 characters long', minLength(3)),
-                $autoDirty: true
-            },
-            email: {
-                required: helpers.withMessage('Email field can not be empty', required),
-                email,
-                isUniqueEmail,
-                $autoDirty: true
-            },
-            password: {
-                required: helpers.withMessage('Password field can not be empty', required),
-                minLength: helpers.withMessage('Password field should br at least 4 characters long', minLength(4)),
-                $autoDirty: true
-            },
-            passwordConfirmation: {
-                required: helpers.withMessage('Password field can not be empty', required),
-                minLength: helpers.withMessage('Password field should be at least 4 characters long', minLength(4)),
-                sameAsPassword: helpers.withMessage('Passwords are not the same', sameAs(signupState.password)),
-                $autoDirty: true
-            }
+            return {
+                fullName: {
+                    required: helpers.withMessage('Name field is required', required),
+                    minLength: helpers.withMessage('Name field should be at least 3 characters long', minLength(3)),
+                    $autoDirty: true
+                },
+                email: {
+                    required: helpers.withMessage('Email field can not be empty', required),
+                    email,
+                    isUniqueEmail,
+                    $autoDirty: true
+                },
+                password: {
+                    required: helpers.withMessage('Password field can not be empty', required),
+                    minLength: helpers.withMessage('Password field should br at least 8 characters long', minLength(4)),
+                    $autoDirty: true
+                },
+                passwordConfirmation: {
+                    required: helpers.withMessage('Password field can not be empty', required),
+                    minLength: helpers.withMessage('Password field should be at least 8 characters long', minLength(4)),
+                    sameAsPassword: helpers.withMessage('Passwords are not the same', sameAs(signupState.password)),
+                    $autoDirty: true
+                },
+                // avatar: {
+                //     required: helpers.withMessage('Avatar field is required', required)
+                // }
         }});
         
         const loginRules = {
@@ -139,7 +151,7 @@ export default defineComponent({
             },
             password: {
                 required: helpers.withMessage('Password field can not be empty', required),
-                minLength: helpers.withMessage('Password field should be at least 4 characters long', minLength(4)),
+                minLength: helpers.withMessage('Password field should be at least 8 characters long', minLength(4)),
                 $autoDirty: true
             }
         };
@@ -192,11 +204,11 @@ export default defineComponent({
         }
         
         const switchTitle = computed(() => {
-            return isLoginMode.value ? 'To signup' : 'To login';
+            return isLoginMode.value ? 'TO SIGNUP' : 'TO LOGIN';
         })
         
         const btnTitle = computed(() => {
-            return isLoginMode.value ? 'Login' : 'Create account';
+            return isLoginMode.value ? 'LOGIN' : 'CREATE ACCOUNT';
         });
         
         return {

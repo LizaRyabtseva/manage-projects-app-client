@@ -1,5 +1,5 @@
 <template>
-        <div>
+        <div class="comment">
             <form @submit.prevent="submit">
                 <div class="form-fields">
                     <the-input
@@ -39,12 +39,6 @@ export default defineComponent({
             const date = new Date();
             emit('submit', {text: comment.value, date, taskId, userId: userId.value});
             comment.value = '';
-            // try {
-            //     store.dispatch('api/createComment', {text: comment.value, date, taskId, userId: userId.value});
-            //     comment.value = '';
-            // } catch (err) {
-            //     console.log(err);
-            // }
         }
         
         return {
@@ -57,13 +51,13 @@ export default defineComponent({
 
 <style scoped lang="scss">
 
-.form-fields {
-    //border: 1px solid #0ca8d7;
-}
-
 .action {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+}
+
+.comment {
+    padding-right: 200px;
 }
 </style>

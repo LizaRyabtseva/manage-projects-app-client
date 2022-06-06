@@ -1,9 +1,12 @@
 <template>
     <nav>
+        <div class="nav-list">
+            <span class="logo">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span to="/liza" class="nav-link">board</span>
+            </span>
+        </div>
         <ul class="nav-list">
-            <li class="nav-link">
-                <router-link :to="routes.projects" class="nav-link">WorkBoard</router-link>
-            </li>
             <li class="nav-link">
                 <router-link :to="routes.projects" class="nav-link">Projects</router-link>
             </li>
@@ -15,9 +18,9 @@
             </li>
         </ul>
         <ul v-else class="account">
-            <li class="nav-link">
-                <router-link :to="routes.projects" class="nav-link">Settings</router-link>
-            </li>
+<!--            <li class="nav-link">-->
+<!--                <router-link to="/settings" class="nav-link">Settings</router-link>-->
+<!--            </li>-->
                 <the-button class="nav-btn" @click="logout" mode="dark" size="large">LOGOUT</the-button>
         </ul>
         
@@ -62,12 +65,24 @@ nav {
     position: absolute;
     top: 0;
     width: 100%;
+    //display: flex;
+    //flex-direction: row;
     
     &::after {
         content: "";
         display: table;
         clear: both;
     }
+}
+
+.logo {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    height: 50px;
+    //justify-content: center;
+    //align-items: center;
+    //width: 100px;
 }
 
 .nav-list,
@@ -92,6 +107,16 @@ nav {
                 @include setHoverStyles;
             }
         }
+    }
+    
+    span {
+        &:last-child {
+            margin-right: 30px;
+        }
+       &:first-child {
+           margin-left: 5px;
+       }
+        padding-top: 7px;
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
     <div class="task-container">
-        <h4>{{title}}</h4>
+        <h4 class="task-title">{{title}}</h4>
         <div v-if="containerId === -1 && !sprintId">
             <the-input
                 :error="startV.dateStart.$errors.length > 0"
@@ -215,5 +215,9 @@ export default defineComponent({
     border-radius: 0.3rem;
     margin-right: 0.5rem;
     min-height: 120px;
+}
+
+.task-title {
+    color: darken($color-primary, 25%);
 }
 </style>

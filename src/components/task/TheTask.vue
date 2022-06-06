@@ -5,24 +5,30 @@
             <router-link :to="`/projects/${projectId}/tasks/edit/${taskId}`">Edit</router-link>
         </div>
         <div class="detail">
+            <span class="item-title">priority</span>
             <the-priority :priority="task.priority"/>
+        </div>
+        <div class="detail">
+            <span class="item-title">task's type</span>
             <the-type :type="task.type" />
         </div>
         <div class="detail">
             <span class="item-title">status</span>
             <span>{{task.status}}</span>
         </div>
-        <div class="detail">
+        <div class="detail description">
             <span class="item-title">description</span>
             <span>{{task.description}}</span>
         </div>
         <div class="detail">
-            <span class="item-title">people</span>
             <span class="item-title">assigner</span>
             <span>{{task.assigner[0].name}}</span>
+        </div>
+        <div class="detail">
             <span class="item-title">creator</span>
             <span>{{task.creator[0].name}}</span>
         </div>
+        <span class="comments-title">comment's section</span>
         <the-comment @submit="submitHandler" />
         <comment-container
             class="comments"
@@ -94,5 +100,21 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     @include setBorder(1px, 'all', $color-border);
+    border-radius: 3px;
+    margin-top: 5px;
+    
+    .comment {
+        padding-right: 200px;
+    }
+}
+
+.comments-title {
+    //padding-top: 600px;
+    font-size: 75%;
+    color: darken($color-primary, 25%);
+}
+
+.description {
+    padding-right: 200px;
 }
 </style>

@@ -5,7 +5,7 @@
          </span>
         <span v-else class="item">{{ project.title }}</span>
         <span class="item">{{ project.code }}</span>
-        <span class="item">{{ project.status }}</span>
+        <span class="item" :class="[project.status.toLowerCase()]">{{ project.status }}</span>
         <span class="item">{{ project.owner.name || project.owner }}</span>
     </div>
 </template>
@@ -63,5 +63,13 @@ export default defineComponent({
             @include setHoverStyles;
         }
     }
+}
+
+.active {
+    color: $color-task;
+}
+
+.finished {
+    color: $color-epic;
 }
 </style>

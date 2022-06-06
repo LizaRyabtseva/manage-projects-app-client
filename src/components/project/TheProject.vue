@@ -5,10 +5,30 @@
             <router-link :to="routes.backlog">Backlog</router-link>
             <router-link :to="routes.dashboard">Sprint</router-link>
 <!--            edit доступно только для хозяина проекта-->
-            <router-link :to="`/projects/edit/${projectId}`">Edit</router-link>
-            <the-button mode="dark" size="small">Make current</the-button>
+            <router-link v-if="ownerId === userId" :to="`/projects/edit/${projectId}`">Edit</router-link>
         </div>
-        <div class="detail">
+        <div v-if="project.status === status.active">
+            <the-button v-if="(currentProjectId !== project.id && project.status === status.active)" @click="makeCurrent" mode="dark" size="small">MAKE CURRENT</the-button>
+            <div v-else class="detail">
+            <span class="status-container">
+                <span class="material-symbols-outlined">
+                    check_circle
+                </span>
+                <span class="current">Current project</span>
+            </span>
+            </div>
+        </div>
+<!--        <the-button v-if="(currentProjectId !== project.id && project.status === status.active)" @click="makeCurrent" mode="dark" size="small">MAKE CURRENT</the-button>-->
+<!--        <div v-else-if="" class="detail">-->
+<!--            <span class="status-container">-->
+<!--                <span class="material-symbols-outlined">-->
+<!--                    check_circle-->
+<!--                </span>-->
+<!--                <span class="current">Current project</span>-->
+<!--            </span>-->
+<!--        </div>-->
+        <div class="detail space">
+            <span class="item-title">project's status</span>
             <span class="status-container">
                 <span v-if="project.status === status.active"
                       class="material-symbols-outlined">
@@ -18,14 +38,14 @@
                       class="material-symbols-outlined">
                     clear_night
                 </span>
-                 <span>{{project.status}}</span>
+                 <span class="project-status" :class="[project.status.toLowerCase()]">{{project.status}}</span>
             </span>
         </div>
         <div class="detail">
             <span class="item-title">code</span>
             <span>{{project.code}}</span>
         </div>
-        <div class="detail">
+        <div class="detail description">
             <span class="item-title">description</span>
             <span>{{project.description}}</span>
         </div>
@@ -45,7 +65,7 @@
 <script lang="ts">
 import {useRoute} from 'vue-router';
 import {useStore} from "vuex";
-import {defineComponent, onMounted, computed} from "vue";
+import {defineComponent, onMounted, computed, watch, ref} from "vue";
 import BaseContainer from "../UI/BaseContainer.vue";
 import ProjectStatus from "@/models/ProjectStatus";
 import routesMap from "@/models/routes";
@@ -57,16 +77,51 @@ export default defineComponent({
         const route = useRoute();
         const store = useStore();
         const {projectId} = route.params;
-
+        const userId = computed(() => store.getters['auth/userId']);
+        const currentProject = computed(() => store.getters['auth/currentProject']);
+        const currentProjectId = computed(() => currentProject.value.id);
+        
+        const owner = computed(() => currentProject.value.owner);
+        const isCurrent = ref(false);
+        
         onMounted(() => {
             store.dispatch('project/fetchProject', projectId);
         });
 
         const fetchedProject = computed(() => store.getters['project/fetchedProject']);
+    
+        const ownerId = computed(() => fetchedProject.value.ownerId);
+        
+        const makeCurrent = () => {
+            try {
+                store.dispatch('project/makeCurrentProject', {projectId: +projectId, userId: userId.value});
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        
+        watch(currentProjectId, (newValue) => {
+            if (+projectId === newValue) {
+                isCurrent.value = true;
+            }
+        });
+        
+        // watch(owner, (newValue) => {
+        //     console.log(newValue.value);
+        //     if (userId.value === newValue.id) {
+        //         isEdit.value = true;
+        //     }
+        // });
 
         return {
+            isCurrent,
+            ownerId,
+            userId,
+            currentProjectId,
+            // isEdit,
             projectId,
             project: fetchedProject,
+            makeCurrent,
             routes: routesMap,
             status: ProjectStatus
         }
@@ -80,6 +135,23 @@ export default defineComponent({
 .project-title {
     background-color: $color-primary;
 }
+.active {
+    color: $color-task;
+}
 
+.finished {
+    color: $color-epic;
+}
 
+.material-symbols-outlined {
+    margin-right: 5px;
+}
+
+.space {
+    margin-top: 30px;
+}
+
+.description {
+    padding-right: 200px;
+}
 </style>

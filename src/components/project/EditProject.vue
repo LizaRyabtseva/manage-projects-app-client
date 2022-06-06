@@ -1,7 +1,8 @@
 <template>
     <the-spinner v-if="isLoading" />
     <base-container v-else>
-        <h4>Create a new project</h4>
+<!--        <h4>Create a new project</h4>-->
+        <h4>Edit information about '{{title}}' project</h4>
         <form class="create-form" @submit.prevent="submitHandler">
             <div class="form-fields">
                 <the-input
@@ -65,7 +66,7 @@
                 </div>
             </div>
             <div class="action">
-                <the-button type="submit" mode="dark" size="large">{{btnTitle}}</the-button>
+                <the-button with-margin type="submit" mode="dark" size="large">{{btnTitle}}</the-button>
             </div>
         </form>
     </base-container>
@@ -97,12 +98,6 @@ import TheSpinner from "@/components/UI/spinner/TheSpinner.vue";
 export default defineComponent({
     name: "EditProject",
     components: {TheSpinner, SelectOption, TheSelect, TheSearch, BaseContainer, TheButton, TheInput},
-    props: {
-        projectId: {
-            type: Number,
-            required: false
-        }
-    },
     setup(props) {
         const store = useStore();
         const router = useRouter();
@@ -218,6 +213,7 @@ export default defineComponent({
                         owner: userId,
                         title: title.value,
                         code: code.value,
+                        status: status.value,
                         description: description.value,
                         team: memberIds
                     };
@@ -268,6 +264,7 @@ export default defineComponent({
             isLoading,
             btnTitle,
             fetchedProject,
+            projectId,
             title,
             code,
             description,

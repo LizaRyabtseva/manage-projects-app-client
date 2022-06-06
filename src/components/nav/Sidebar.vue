@@ -9,9 +9,9 @@
         <div class="sidebar-items">
             <slot></slot>
         </div>
-        <footer class="sidebar-footer">
-            <slot name="footer"></slot>
-        </footer>
+<!--        <footer class="sidebar-footer">-->
+<!--            <slot name="footer"></slot>-->
+<!--        </footer>-->
     </div>
 </template>
 
@@ -55,7 +55,7 @@ export default defineComponent({
 .sidebar-content {
     background-color: $color-light;
     //height: 92vh;
-    height: 100vh;
+    height: 150vh;
     position: absolute;
     top: 58px;
     left: 0;

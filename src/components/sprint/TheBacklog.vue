@@ -3,7 +3,7 @@
     <base-container v-else>
         <h4>Backlog</h4>
 <!--        <the-search label-placeholder="Find task" category="tasks" size="small" v-model="searchTask"/>-->
-        <tasks-container
+            <tasks-container
             v-for="container in tasksContainers"
             :key="container.id"
             :container-id="container.id"

@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="action">
-                <the-button type="submit" mode="dark" size="large">{{btnTitle}}</the-button>
+                <the-button with-margin type="submit" mode="dark" size="large">{{btnTitle}}</the-button>
             </div>
         </form>
     </base-container>

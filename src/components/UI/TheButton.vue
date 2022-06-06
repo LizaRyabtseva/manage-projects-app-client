@@ -1,5 +1,5 @@
 <template>
-    <button v-if="!link" :class="[mode, size]">
+    <button v-if="!link" :class="[mode, size, {'with-margin': withMargin}]">
         <slot/>
     </button>
     <RouterLink v-else :to="to" :class="[mode, size]">
@@ -32,6 +32,11 @@ export default defineComponent( {
             type: String,
             default: 'normal',
             required: false
+        },
+        withMargin: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     },
     
@@ -43,7 +48,11 @@ export default defineComponent( {
 
 button, a {
     border: none;
-    //margin: 10px 0;
+    margin: 10px 0;
+    &.with-margin {
+        margin: 10px 20px;
+    }
+    
     text-decoration: none;
     font-weight: 500;
     font-family: inherit;

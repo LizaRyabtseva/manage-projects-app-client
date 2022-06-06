@@ -4,6 +4,7 @@ import routesMap from "@/models/routes";
 import Authorization from '../components/auth/Authorization.vue';
 import EditProject from '../components/project/EditProject.vue';
 import AllProjects from '../components/project/AllProjects.vue';
+import MyProjects from '../components/project/MyProjects.vue';
 import EditTask from '../components/task/EditTask.vue';
 // import TheDashboard from '../components/sprint/TheDashboard.vue';
 import TheDashboard from '../components/dashboard/TheDashboard.vue';
@@ -32,6 +33,10 @@ const routes: Array<RouteRecordRaw> = [{
     name: 'projects',
     component: AllProjects
 }, {
+    path: routesMap.myProjects,
+    name: 'myProjects',
+    component: MyProjects
+},{
     path: routesMap.createTask,
     name: 'createTask',
     component: EditTask,
